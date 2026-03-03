@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import VRPanel from "../VRPanel";
+import victimAssessmentImg from "@/assets/victim-assessment.png";
 
 interface VictimAssessmentSceneProps {
   onComplete: () => void;
@@ -50,25 +51,11 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist }: VictimAssess
     <div className="flex flex-col items-center justify-center min-h-screen fade-in px-4">
       <div className="scene-label mb-6">Scene 6 — Victim Assessment</div>
 
-      {/* Victim wireframe */}
-      <div className="w-full max-w-lg aspect-[4/3] border-2 border-dashed border-border rounded-sm relative mb-6">
-        {/* Victim figure */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className="w-16 h-8 border-2 border-dashed border-foreground/30 rounded-full mb-1 flex items-center justify-center">
-            <span className="text-xs font-mono text-muted-foreground">head</span>
-          </div>
-          <div className="w-24 h-20 border-2 border-dashed border-foreground/30 rounded-sm flex items-center justify-center">
-            <span className="text-xs font-mono text-muted-foreground">torso</span>
-          </div>
-          <div className="flex gap-1 mt-1">
-            <div className="w-11 h-16 border border-dashed border-foreground/20 rounded-sm" />
-            <div className="w-11 h-16 border border-dashed border-foreground/20 rounded-sm" />
-          </div>
-        </div>
-
-        {/* Ground label */}
-        <div className="absolute bottom-2 left-4 text-xs font-mono text-muted-foreground/40">
-          [ victim lying on ground ]
+      {/* Victim wireframe with image */}
+      <div className="w-full max-w-lg aspect-[4/3] border-2 border-dashed border-border rounded-sm relative mb-6 overflow-hidden">
+        <img src={victimAssessmentImg} alt="Victim assessment" className="w-full h-full object-cover opacity-40" />
+        <div className="absolute bottom-2 left-4 text-xs font-mono text-foreground/50 bg-background/60 px-2 py-1 rounded-sm">
+          [ victim lying on ground — assess condition ]
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import VRPanel from "../VRPanel";
+import emergencyCallImg from "@/assets/emergency-call.png";
 
 interface EmergencyCallSceneProps {
   onComplete: () => void;
@@ -43,6 +44,7 @@ const EmergencyCallScene = ({ onComplete, onCompleteChecklist, onMistake, onInco
       {step === "calling" && (
         <VRPanel sceneLabel="Floating UI" className="max-w-md text-center slide-up">
           <div className="space-y-4">
+            <img src={emergencyCallImg} alt="Emergency call" className="w-28 h-28 mx-auto opacity-60 rounded-sm" />
             <div className="font-mono text-lg text-foreground">📱 Calling 112…</div>
             <div className="w-full h-2 border border-dashed border-border rounded-sm overflow-hidden">
               <div className="h-full bg-foreground/20 animate-pulse w-full" />

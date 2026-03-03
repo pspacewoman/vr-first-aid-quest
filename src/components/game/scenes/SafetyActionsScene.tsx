@@ -1,5 +1,6 @@
 import { useState } from "react";
 import VRPanel from "../VRPanel";
+import safetyActionsImg from "@/assets/safety-actions.png";
 
 interface SafetyActionsSceneProps {
   onComplete: () => void;
@@ -22,7 +23,8 @@ const SafetyActionsScene = ({ onComplete, onSkip, onCompleteChecklist }: SafetyA
       <div className="scene-label mb-6">Scene 4 — Safety Actions</div>
 
       {/* Placement area */}
-      <div className="w-full max-w-2xl aspect-video border-2 border-dashed border-border rounded-sm relative mb-6">
+      <div className="w-full max-w-2xl aspect-video border-2 border-dashed border-border rounded-sm relative mb-6 overflow-hidden">
+        <img src={safetyActionsImg} alt="Safety actions" className="absolute inset-0 w-full h-full object-cover opacity-25" />
         {/* Vehicle */}
         <div className="absolute top-[30%] left-[25%] w-36 h-16 border-2 border-dashed border-foreground/30 rounded-sm flex items-center justify-center">
           <span className="text-xs font-mono text-muted-foreground">🚗 vehicle</span>

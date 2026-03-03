@@ -1,5 +1,6 @@
 import { useState } from "react";
 import VRPanel from "../VRPanel";
+import vrHeadsetIcon from "@/assets/vr-headset-icon.png";
 
 interface MainMenuSceneProps {
   onStartGame: () => void;
@@ -26,6 +27,7 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist }: MainMenuSceneProps) => 
 
       <VRPanel sceneLabel="Scene 1 — Main Menu" className="w-full max-w-lg text-center">
         <div className="mb-8">
+          <img src={vrHeadsetIcon} alt="VR Headset" className="w-24 h-24 mx-auto mb-4 opacity-70" />
           <div className="text-xs font-mono text-muted-foreground mb-2">[ META QUEST 3 ]</div>
           <h1 className="font-mono text-2xl font-bold tracking-wider text-foreground mb-2">
             VR FIRST AID

@@ -1,3 +1,5 @@
+import accidentSceneImg from "@/assets/accident-scene.png";
+
 interface AccidentSceneProps {
   onSelectHotspot: (id: string) => void;
 }
@@ -7,8 +9,10 @@ const AccidentScene = ({ onSelectHotspot }: AccidentSceneProps) => {
     <div className="flex flex-col items-center justify-center min-h-screen fade-in px-4">
       <div className="scene-label mb-6">Scene 3 — Accident Encounter</div>
 
-      {/* 3D layout placeholder */}
-      <div className="w-full max-w-3xl aspect-video border-2 border-dashed border-border rounded-sm relative mb-6 p-4">
+      {/* 3D layout with image background */}
+      <div className="w-full max-w-3xl aspect-video border-2 border-dashed border-border rounded-sm relative mb-6 p-4 overflow-hidden">
+        {/* Background image */}
+        <img src={accidentSceneImg} alt="Accident scene" className="absolute inset-0 w-full h-full object-cover opacity-30" />
         {/* Ground plane */}
         <div className="absolute bottom-0 left-0 right-0 h-1/3 border-t border-dashed border-foreground/10">
           <div className="absolute top-2 left-4 text-xs font-mono text-muted-foreground">[ road surface ]</div>

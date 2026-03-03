@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import drivingSceneImg from "@/assets/driving-scene.png";
 
 interface DrivingSceneProps {
   onComplete: () => void;
@@ -26,31 +27,15 @@ const DrivingScene = ({ onComplete }: DrivingSceneProps) => {
     <div className="flex flex-col items-center justify-center min-h-screen fade-in">
       <div className="scene-label mb-6">Scene 2 — Driving Scene (Intro)</div>
 
-      {/* Road viewport placeholder */}
+      {/* Road viewport */}
       <div className="w-full max-w-2xl aspect-video border-2 border-dashed border-border rounded-sm relative overflow-hidden mb-6">
-        {/* Horizon line */}
-        <div className="absolute top-1/3 left-0 right-0 border-t border-dashed border-foreground/20" />
-        
-        {/* Road lines */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-2/3 border-l-2 border-dashed border-foreground/15" />
-        <div className="absolute bottom-0 left-[35%] w-px h-2/3 border-l border-dashed border-foreground/10" />
-        <div className="absolute bottom-0 left-[65%] w-px h-2/3 border-l border-dashed border-foreground/10" />
-
-        {/* Vanishing point label */}
-        <div className="absolute top-[30%] left-1/2 -translate-x-1/2 text-xs font-mono text-muted-foreground">
-          [ vanishing point ]
+        <img src={drivingSceneImg} alt="Driving scene" className="w-full h-full object-cover opacity-60" />
+        {/* Overlay labels */}
+        <div className="absolute top-[30%] left-1/2 -translate-x-1/2 text-xs font-mono text-foreground/50 bg-background/60 px-2 py-1 rounded-sm">
+          [ first-person driving view ]
         </div>
-
-        {/* Steering wheel indicator */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-          <div className="w-20 h-10 border-2 border-dashed border-foreground/30 rounded-t-full flex items-end justify-center pb-1">
-            <span className="text-xs font-mono text-muted-foreground">wheel</span>
-          </div>
-        </div>
-
-        {/* Dashboard label */}
-        <div className="absolute bottom-0 left-0 right-0 h-8 border-t border-dashed border-foreground/15 flex items-center justify-center">
-          <span className="text-xs font-mono text-muted-foreground">[ dashboard ]</span>
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs font-mono text-foreground/40 bg-background/60 px-2 py-1 rounded-sm">
+          [ steering wheel ]
         </div>
       </div>
 

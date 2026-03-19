@@ -7,6 +7,7 @@ interface FlowDiagramProps {
 
 const scenes: { id: Scene; label: string }[] = [
   { id: "main-menu", label: "Main Menu" },
+  { id: "rescue-chain", label: "Rescue Chain Intro" },
   { id: "driving", label: "Driving Intro" },
   { id: "accident", label: "Accident Scene" },
   { id: "safety-actions", label: "Safety Actions" },
@@ -17,10 +18,10 @@ const scenes: { id: Scene; label: string }[] = [
 
 const FlowDiagram = ({ currentScene, onClose }: FlowDiagramProps) => {
   return (
-    <div className="fixed inset-0 bg-background/90 z-50 flex items-center justify-center fade-in p-4">
+    <div className="fixed inset-0 bg-background/90 z-50 flex items-center justify-center fade-in p-4 backdrop-blur-sm">
       <div className="wireframe-panel-floating w-full max-w-2xl">
         <div className="scene-label mb-3">Game Flow Diagram</div>
-        <h2 className="font-mono text-lg font-bold text-foreground mb-6 border-b border-dashed border-border pb-3">
+        <h2 className="font-mono text-lg font-bold text-foreground mb-6 border-b border-border/40 pb-3">
           Scene Progression
         </h2>
 
@@ -28,22 +29,22 @@ const FlowDiagram = ({ currentScene, onClose }: FlowDiagramProps) => {
           {scenes.map((scene, i) => (
             <div key={scene.id} className="flex flex-col items-center">
               <div
-                className={`w-full max-w-xs px-6 py-3 border-2 border-dashed rounded-sm text-center font-mono text-sm transition-all ${
+                className={`w-full max-w-xs px-6 py-3 border rounded-lg text-center font-mono text-sm transition-all ${
                   currentScene === scene.id
-                    ? "border-foreground bg-foreground/10 text-foreground font-bold"
-                    : "border-border text-muted-foreground"
+                    ? "border-primary bg-primary/15 text-foreground font-bold shadow-md"
+                    : "border-border/40 text-muted-foreground"
                 }`}
               >
                 {scene.label}
                 {currentScene === scene.id && (
-                  <span className="ml-2 text-xs">← current</span>
+                  <span className="ml-2 text-xs text-primary">← current</span>
                 )}
               </div>
               {i < scenes.length - 1 && (
                 <div className="flex flex-col items-center my-1">
-                  <div className="w-px h-4 border-l border-dashed border-foreground/30" />
-                  <span className="text-xs font-mono text-muted-foreground">↓</span>
-                  <div className="w-px h-4 border-l border-dashed border-foreground/30" />
+                  <div className="w-px h-3 bg-border/40" />
+                  <span className="text-xs font-mono text-primary/50">↓</span>
+                  <div className="w-px h-3 bg-border/40" />
                 </div>
               )}
             </div>
@@ -51,8 +52,8 @@ const FlowDiagram = ({ currentScene, onClose }: FlowDiagramProps) => {
         </div>
 
         {/* Conditional logic notes */}
-        <div className="mt-6 space-y-2 border-t border-dashed border-border pt-4">
-          <div className="font-mono text-xs text-muted-foreground uppercase tracking-wider mb-2">
+        <div className="mt-6 space-y-2 border-t border-border/40 pt-4">
+          <div className="font-mono text-xs text-primary/70 uppercase tracking-wider mb-2">
             Conditional Logic
           </div>
           <div className="font-mono text-xs text-foreground/60">
@@ -60,6 +61,9 @@ const FlowDiagram = ({ currentScene, onClose }: FlowDiagramProps) => {
           </div>
           <div className="font-mono text-xs text-foreground/60">
             → If incorrect emergency call → corrective feedback shown
+          </div>
+          <div className="font-mono text-xs text-foreground/60">
+            → If wrong breathing check → error feedback with hint
           </div>
           <div className="font-mono text-xs text-foreground/60">
             → Checklist updates dynamically per completed action

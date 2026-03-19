@@ -5,15 +5,19 @@ import victimAssessmentImg from "@/assets/victim-assessment.png";
 interface VictimAssessmentSceneProps {
   onComplete: () => void;
   onCompleteChecklist: (id: string) => void;
+  onMistake: () => void;
+  onBreathingMistake: () => void;
 }
 
-type AssessStep = "approach" | "consciousness" | "breathing" | "bleeding" | "done";
+type AssessStep = "approach" | "consciousness" | "breathing" | "breathing-check" | "bleeding" | "done";
 
-const VictimAssessmentScene = ({ onComplete, onCompleteChecklist }: VictimAssessmentSceneProps) => {
+const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onBreathingMistake }: VictimAssessmentSceneProps) => {
   const [step, setStep] = useState<AssessStep>("approach");
   const [breathTimer, setBreathTimer] = useState(10);
   const [timerActive, setTimerActive] = useState(false);
   const [pressureApplied, setPressureApplied] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [chestBreathing, setChestBreathing] = useState(true);
 
   useEffect(() => {
     if (!timerActive || breathTimer <= 0) return;
@@ -23,7 +27,11 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist }: VictimAssess
           clearInterval(t);
           setTimerActive(false);
           onCompleteChecklist("check-breathing");
-          setStep("bleeding");
+          setFeedback({ type: "success", text: "Breathing check complete. Victim is breathing." });
+          setTimeout(() => {
+            setFeedback(null);
+            setStep("bleeding");
+          }, 1500);
           return 0;
         }
         return prev - 1;
@@ -32,96 +40,178 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist }: VictimAssess
     return () => clearInterval(t);
   }, [timerActive, breathTimer, onCompleteChecklist]);
 
+  // Toggle chest animation
+  useEffect(() => {
+    if (step === "breathing-check" && timerActive) {
+      const interval = setInterval(() => setChestBreathing(prev => !prev), 1500);
+      return () => clearInterval(interval);
+    }
+  }, [step, timerActive]);
+
   const handleTapShoulder = () => {
     onCompleteChecklist("assess-consciousness");
-    setStep("breathing");
+    setFeedback({ type: "success", text: "No response from victim." });
+    setTimeout(() => {
+      setFeedback(null);
+      setStep("breathing");
+    }, 1200);
   };
 
-  const handleStartBreathCheck = () => {
-    setTimerActive(true);
+  const handleBreathingChoice = (choice: string) => {
+    if (choice === "correct") {
+      setStep("breathing-check");
+      setTimerActive(true);
+    } else {
+      setFeedback({
+        type: "error",
+        text: "Incorrect. Check breathing by observing chest movement and listening for breath sounds."
+      });
+      onMistake();
+      onBreathingMistake();
+      setTimeout(() => setFeedback(null), 3000);
+    }
   };
 
   const handleApplyPressure = () => {
     setPressureApplied(true);
     onCompleteChecklist("control-bleeding");
-    setTimeout(() => setStep("done"), 1000);
+    onCompleteChecklist("provide-help");
+    setFeedback({ type: "success", text: "Pressure applied — bleeding controlled." });
+    setTimeout(() => {
+      setFeedback(null);
+      setStep("done");
+    }, 1200);
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen fade-in px-4">
-      <div className="scene-label mb-6">Scene 6 — Victim Assessment</div>
+      <div className="scene-label mb-4">Scene 6 — Victim Assessment</div>
 
-      {/* Victim wireframe with image */}
-      <div className="w-full max-w-lg aspect-[4/3] border-2 border-dashed border-border rounded-sm relative mb-6 overflow-hidden">
-        <img src={victimAssessmentImg} alt="Victim assessment" className="w-full h-full object-cover opacity-40" />
-        <div className="absolute bottom-2 left-4 text-xs font-mono text-foreground/50 bg-background/60 px-2 py-1 rounded-sm">
-          [ victim lying on ground — assess condition ]
+      <div className="dialogue-box mb-4">
+        {step === "approach" && "Check the victim's condition carefully."}
+        {step === "breathing" && "Determine if the victim is breathing normally."}
+        {step === "breathing-check" && "Observe chest movement and listen for breathing."}
+        {step === "bleeding" && "Check the victim for visible injuries and bleeding."}
+        {step === "done" && "First aid provided. The victim is stabilized."}
+      </div>
+
+      {/* Victim visual */}
+      <div className="w-full max-w-lg aspect-[4/3] border border-border/40 rounded-lg relative mb-4 overflow-hidden shadow-lg">
+        <img src={victimAssessmentImg} alt="Victim assessment" className="w-full h-full object-cover opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+
+        {/* Chest breathing animation */}
+        {(step === "breathing-check" || step === "breathing") && (
+          <div className={`absolute top-[35%] left-[40%] w-20 h-12 rounded-lg border-2 border-info/40 bg-info/10 flex items-center justify-center transition-transform duration-[1500ms] ease-in-out ${
+            chestBreathing && timerActive ? "scale-y-105" : "scale-y-100"
+          } breathe-animation`}>
+            <span className="text-[10px] font-mono text-info">🫁 Chest</span>
+          </div>
+        )}
+
+        {/* Wound area - visible red */}
+        {(step === "bleeding" || step === "done") && (
+          <div className={`absolute top-[55%] left-[55%] highlight-glow ${pressureApplied ? '' : 'blink-prompt'}`}>
+            <div className="w-14 h-10 rounded-lg bg-destructive/25 border-2 border-destructive/50 flex items-center justify-center">
+              <span className="text-[10px] font-mono text-destructive font-bold">
+                {pressureApplied ? "🩹 Treated" : "🩸 Wound"}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Body interaction areas */}
+        {step === "approach" && (
+          <div className="absolute top-[25%] left-[35%] w-16 h-12 border-2 border-primary/40 rounded-lg flex items-center justify-center cursor-pointer hover:bg-primary/10 transition-all highlight-glow"
+               onClick={handleTapShoulder}>
+            <span className="text-[10px] font-mono text-primary blink-prompt">👋 Shoulder</span>
+          </div>
+        )}
+
+        <div className="absolute bottom-2 left-3 bg-card/70 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-mono text-foreground/50">
+          Victim lying on ground
         </div>
       </div>
 
+      {/* Feedback popup */}
+      {feedback && (
+        <div className={`mb-3 max-w-md w-full ${feedback.type === "success" ? "feedback-success" : "feedback-error"}`}>
+          {feedback.type === "success" ? "✓" : "✕"} {feedback.text}
+        </div>
+      )}
+
       {/* Interactive panels */}
-      {step === "approach" && (
+      {step === "approach" && !feedback && (
         <VRPanel sceneLabel="Contextual Prompt" className="max-w-md slide-up">
           <div className="space-y-3">
-            <div className="prompt-text">Check the victim's condition</div>
+            <div className="prompt-text">Tap the victim's shoulder to check consciousness</div>
             <button onClick={handleTapShoulder} className="vr-button w-full pulse-border">
-              👋 Tap victim's shoulder
+              👋 Tap Victim's Shoulder
             </button>
-            <div className="text-xs font-mono text-muted-foreground text-center">
-              [ Interaction: tap to check consciousness ]
+          </div>
+        </VRPanel>
+      )}
+
+      {step === "breathing" && !feedback && (
+        <VRPanel sceneLabel="Assessment Step" className="max-w-md slide-up">
+          <div className="space-y-3">
+            <div className="prompt-text">No response. How do you check breathing?</div>
+            <button
+              onClick={() => handleBreathingChoice("correct")}
+              className="vr-button w-full"
+            >
+              🫁 Look, listen, and feel for 10 seconds
+            </button>
+            <button
+              onClick={() => handleBreathingChoice("wrong1")}
+              className="vr-button w-full"
+            >
+              🪞 Hold a mirror to the mouth
+            </button>
+            <button
+              onClick={() => handleBreathingChoice("wrong2")}
+              className="vr-button w-full"
+            >
+              💧 Splash water on the face
+            </button>
+          </div>
+        </VRPanel>
+      )}
+
+      {step === "breathing-check" && (
+        <VRPanel sceneLabel="Assessment Step" className="max-w-md slide-up">
+          <div className="space-y-3">
+            <div className="prompt-text">Observing breathing…</div>
+            <div className="space-y-2">
+              <div className="font-mono text-center text-lg text-foreground">
+                Checking… <span className="text-primary">{breathTimer}s</span>
+              </div>
+              <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-info/60 transition-all duration-1000 rounded-full"
+                  style={{ width: `${((10 - breathTimer) / 10) * 100}%` }}
+                />
+              </div>
+              <div className="text-xs font-mono text-muted-foreground text-center">
+                Look at chest, listen near mouth, feel for air
+              </div>
             </div>
           </div>
         </VRPanel>
       )}
 
-      {step === "consciousness" && null}
-
-      {step === "breathing" && (
+      {step === "bleeding" && !feedback && (
         <VRPanel sceneLabel="Assessment Step" className="max-w-md slide-up">
           <div className="space-y-3">
-            <div className="prompt-text">No response. Check breathing.</div>
-            {!timerActive ? (
-              <button onClick={handleStartBreathCheck} className="vr-button w-full pulse-border">
-                🫁 Check Breathing
-              </button>
-            ) : (
-              <div className="space-y-2">
-                <div className="font-mono text-center text-lg text-foreground">
-                  Checking… {breathTimer}s
-                </div>
-                <div className="w-full h-3 border border-dashed border-border rounded-sm overflow-hidden">
-                  <div
-                    className="h-full bg-foreground/20 transition-all duration-1000"
-                    style={{ width: `${((10 - breathTimer) / 10) * 100}%` }}
-                  />
-                </div>
-                <div className="text-xs font-mono text-muted-foreground text-center">
-                  [ look, listen, feel for 10 seconds ]
-                </div>
-              </div>
-            )}
-          </div>
-        </VRPanel>
-      )}
-
-      {step === "bleeding" && (
-        <VRPanel sceneLabel="Assessment Step" className="max-w-md slide-up">
-          <div className="space-y-3">
-            <div className="prompt-text">Breathing detected. Bleeding found on arm.</div>
-            {!pressureApplied ? (
-              <>
-                <button onClick={handleApplyPressure} className="vr-button w-full pulse-border">
-                  🩹 Apply pressure to wound
-                </button>
-                <div className="text-xs font-mono text-muted-foreground text-center">
-                  [ Drag interaction: apply pressure ]
-                </div>
-              </>
-            ) : (
-              <div className="font-mono text-sm text-success text-center">
-                ✓ Pressure applied — bleeding controlled
-              </div>
-            )}
+            <div className="prompt-text">
+              Breathing detected. <span className="text-destructive font-bold">Bleeding found on arm.</span>
+            </div>
+            <button onClick={handleApplyPressure} className="vr-button w-full pulse-border">
+              🩹 Apply Pressure to Wound
+            </button>
+            <div className="text-xs font-mono text-muted-foreground text-center">
+              Press firmly on the wound to control bleeding
+            </div>
           </div>
         </VRPanel>
       )}
@@ -129,13 +219,22 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist }: VictimAssess
       {step === "done" && (
         <VRPanel className="max-w-md text-center slide-up">
           <div className="space-y-4">
-            <div className="font-mono text-sm text-success">
-              ✓ Victim assessment complete
+            <div className="feedback-success">
+              ✓ Victim assessment and first aid complete
             </div>
-            <div className="space-y-1 text-left">
-              <div className="prompt-text border-success/30 text-success text-xs">☑ Assess consciousness</div>
-              <div className="prompt-text border-success/30 text-success text-xs">☑ Check breathing</div>
-              <div className="prompt-text border-success/30 text-success text-xs">☑ Control bleeding</div>
+            <div className="space-y-1.5 text-left">
+              <div className="flex items-center gap-2 text-xs font-mono text-success">
+                <span className="w-4 h-4 bg-success/20 rounded flex items-center justify-center text-[10px]">✓</span>
+                Consciousness assessed
+              </div>
+              <div className="flex items-center gap-2 text-xs font-mono text-success">
+                <span className="w-4 h-4 bg-success/20 rounded flex items-center justify-center text-[10px]">✓</span>
+                Breathing checked
+              </div>
+              <div className="flex items-center gap-2 text-xs font-mono text-success">
+                <span className="w-4 h-4 bg-success/20 rounded flex items-center justify-center text-[10px]">✓</span>
+                Bleeding controlled
+              </div>
             </div>
             <button onClick={onComplete} className="vr-button-primary w-full">
               ▶ View Results

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useGameState } from "@/hooks/useGameState";
 import ChecklistOverlay from "./ChecklistOverlay";
+import SideChecklist from "./SideChecklist";
 import FlowDiagram from "./FlowDiagram";
 import MainMenuScene from "./scenes/MainMenuScene";
+import RescueChainScene from "./scenes/RescueChainScene";
 import DrivingScene from "./scenes/DrivingScene";
 import AccidentScene from "./scenes/AccidentScene";
 import SafetyActionsScene from "./scenes/SafetyActionsScene";
@@ -15,16 +17,20 @@ const GameContainer = () => {
     state,
     goToScene,
     completeChecklistItem,
+    completeRescueChainStep,
     addMistake,
     toggleChecklist,
     setSkippedSafety,
     setIncorrectCall,
+    setBreathingMistake,
     finishGame,
     resetGame,
     completionPercent,
   } = useGameState();
 
   const [showFlow, setShowFlow] = useState(false);
+
+  const isGameplay = !["main-menu", "rescue-chain", "feedback"].includes(state.currentScene);
 
   const handleAccidentHotspot = (id: string) => {
     if (id === "triangle") {
@@ -39,7 +45,26 @@ const GameContainer = () => {
   const handleSkipSafety = () => {
     setSkippedSafety();
     addMistake(15);
+    completeRescueChainStep("secure", false);
     goToScene("emergency-call");
+  };
+
+  const handleSafetyComplete = () => {
+    completeRescueChainStep("recognize");
+    completeRescueChainStep("secure");
+    goToScene("emergency-call");
+  };
+
+  const handleCallComplete = () => {
+    completeRescueChainStep("call");
+    goToScene("victim-assessment");
+  };
+
+  const handleVictimComplete = () => {
+    completeRescueChainStep("assess");
+    completeRescueChainStep("first-aid");
+    completeRescueChainStep("wait");
+    finishGame();
   };
 
   const renderScene = () => {
@@ -47,10 +72,12 @@ const GameContainer = () => {
       case "main-menu":
         return (
           <MainMenuScene
-            onStartGame={() => goToScene("driving")}
+            onStartGame={() => goToScene("rescue-chain")}
             onOpenChecklist={toggleChecklist}
           />
         );
+      case "rescue-chain":
+        return <RescueChainScene onContinue={() => goToScene("driving")} />;
       case "driving":
         return <DrivingScene onComplete={() => goToScene("accident")} />;
       case "accident":
@@ -58,7 +85,7 @@ const GameContainer = () => {
       case "safety-actions":
         return (
           <SafetyActionsScene
-            onComplete={() => goToScene("emergency-call")}
+            onComplete={handleSafetyComplete}
             onSkip={handleSkipSafety}
             onCompleteChecklist={completeChecklistItem}
           />
@@ -66,7 +93,7 @@ const GameContainer = () => {
       case "emergency-call":
         return (
           <EmergencyCallScene
-            onComplete={() => goToScene("victim-assessment")}
+            onComplete={handleCallComplete}
             onCompleteChecklist={completeChecklistItem}
             onMistake={() => addMistake(5)}
             onIncorrectCall={setIncorrectCall}
@@ -75,8 +102,10 @@ const GameContainer = () => {
       case "victim-assessment":
         return (
           <VictimAssessmentScene
-            onComplete={finishGame}
+            onComplete={handleVictimComplete}
             onCompleteChecklist={completeChecklistItem}
+            onMistake={() => addMistake(5)}
+            onBreathingMistake={setBreathingMistake}
           />
         );
       case "feedback":
@@ -96,27 +125,27 @@ const GameContainer = () => {
   return (
     <div className="min-h-screen bg-background relative">
       {/* Top bar */}
-      {state.currentScene !== "main-menu" && state.currentScene !== "feedback" && (
-        <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-2 bg-card/80 border-b border-dashed border-border backdrop-blur-sm">
-          <div className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
+      {isGameplay && (
+        <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-2 bg-card/90 border-b border-border/40 backdrop-blur-sm">
+          <div className="font-mono text-xs text-primary/70 uppercase tracking-wider">
             VR First Aid Training
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setShowFlow(true)}
-              className="font-mono text-xs px-3 py-1 border border-dashed border-border rounded-sm hover:bg-accent transition-colors"
+              className="font-mono text-xs px-3 py-1 border border-border/40 rounded-lg hover:bg-accent transition-colors"
             >
               Flow ◇
             </button>
             <button
               onClick={toggleChecklist}
-              className="font-mono text-xs px-3 py-1 border border-dashed border-border rounded-sm hover:bg-accent transition-colors"
+              className="font-mono text-xs px-3 py-1 border border-border/40 rounded-lg hover:bg-accent transition-colors"
             >
               Checklist ☐ {completionPercent}%
             </button>
             <button
               onClick={resetGame}
-              className="font-mono text-xs px-3 py-1 border border-dashed border-destructive/40 rounded-sm text-destructive/60 hover:text-destructive hover:bg-destructive/5 transition-colors"
+              className="font-mono text-xs px-3 py-1 border border-destructive/30 rounded-lg text-destructive/60 hover:text-destructive hover:bg-destructive/5 transition-colors"
             >
               Reset ✕
             </button>
@@ -126,6 +155,11 @@ const GameContainer = () => {
 
       {/* Scene content */}
       {renderScene()}
+
+      {/* Side checklist during gameplay */}
+      {isGameplay && (
+        <SideChecklist items={state.checklist} completionPercent={completionPercent} />
+      )}
 
       {/* Checklist overlay */}
       {state.showChecklist && (

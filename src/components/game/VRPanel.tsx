@@ -13,7 +13,7 @@ const VRPanel = ({ children, title, sceneLabel, className = "", floating = true 
     <div className={`${floating ? "wireframe-panel-floating" : "wireframe-panel"} fade-in ${className}`}>
       {sceneLabel && <div className="scene-label mb-3">{sceneLabel}</div>}
       {title && (
-        <h2 className="font-mono text-xl font-bold tracking-wide text-foreground mb-4 border-b border-dashed border-border pb-3">
+        <h2 className="font-mono text-xl font-bold tracking-wide text-foreground mb-4 border-b border-border/40 pb-3">
           {title}
         </h2>
       )}

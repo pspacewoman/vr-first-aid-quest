@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 
 export type Scene =
   | "main-menu"
+  | "rescue-chain"
   | "driving"
   | "accident"
   | "safety-actions"
@@ -15,6 +16,14 @@ export interface ChecklistItem {
   completed: boolean;
 }
 
+export interface RescueChainStep {
+  id: string;
+  label: string;
+  icon: string;
+  completed: boolean;
+  correct: boolean;
+}
+
 export interface GameState {
   currentScene: Scene;
   score: number;
@@ -22,9 +31,11 @@ export interface GameState {
   startTime: number | null;
   elapsedTime: number;
   checklist: ChecklistItem[];
+  rescueChain: RescueChainStep[];
   showChecklist: boolean;
   skippedSafety: boolean;
   incorrectCall: boolean;
+  breathingMistake: boolean;
 }
 
 const initialChecklist: ChecklistItem[] = [
@@ -33,6 +44,16 @@ const initialChecklist: ChecklistItem[] = [
   { id: "assess-consciousness", label: "Assess consciousness", completed: false },
   { id: "check-breathing", label: "Check breathing", completed: false },
   { id: "control-bleeding", label: "Control bleeding", completed: false },
+  { id: "provide-help", label: "Provide first aid", completed: false },
+];
+
+const initialRescueChain: RescueChainStep[] = [
+  { id: "recognize", label: "Recognize emergency", icon: "👁", completed: false, correct: true },
+  { id: "secure", label: "Secure accident scene", icon: "🔶", completed: false, correct: true },
+  { id: "call", label: "Call emergency services", icon: "📞", completed: false, correct: true },
+  { id: "assess", label: "Assess victim", icon: "🩺", completed: false, correct: true },
+  { id: "first-aid", label: "Provide first aid", icon: "🩹", completed: false, correct: true },
+  { id: "wait", label: "Wait for professional help", icon: "🚑", completed: false, correct: true },
 ];
 
 const initialState: GameState = {
@@ -42,9 +63,11 @@ const initialState: GameState = {
   startTime: null,
   elapsedTime: 0,
   checklist: initialChecklist.map((c) => ({ ...c })),
+  rescueChain: initialRescueChain.map((r) => ({ ...r })),
   showChecklist: false,
   skippedSafety: false,
   incorrectCall: false,
+  breathingMistake: false,
 };
 
 export function useGameState() {
@@ -54,7 +77,7 @@ export function useGameState() {
     setState((prev) => ({
       ...prev,
       currentScene: scene,
-      startTime: prev.startTime ?? Date.now(),
+      startTime: prev.startTime ?? (scene !== "main-menu" && scene !== "rescue-chain" ? Date.now() : null),
     }));
   }, []);
 
@@ -63,6 +86,15 @@ export function useGameState() {
       ...prev,
       checklist: prev.checklist.map((item) =>
         item.id === id ? { ...item, completed: true } : item
+      ),
+    }));
+  }, []);
+
+  const completeRescueChainStep = useCallback((id: string, correct: boolean = true) => {
+    setState((prev) => ({
+      ...prev,
+      rescueChain: prev.rescueChain.map((step) =>
+        step.id === id ? { ...step, completed: true, correct } : step
       ),
     }));
   }, []);
@@ -87,6 +119,10 @@ export function useGameState() {
     setState((prev) => ({ ...prev, incorrectCall: true }));
   }, []);
 
+  const setBreathingMistake = useCallback(() => {
+    setState((prev) => ({ ...prev, breathingMistake: true }));
+  }, []);
+
   const finishGame = useCallback(() => {
     setState((prev) => ({
       ...prev,
@@ -99,6 +135,7 @@ export function useGameState() {
     setState({
       ...initialState,
       checklist: initialChecklist.map((c) => ({ ...c })),
+      rescueChain: initialRescueChain.map((r) => ({ ...r })),
     });
   }, []);
 
@@ -110,10 +147,12 @@ export function useGameState() {
     state,
     goToScene,
     completeChecklistItem,
+    completeRescueChainStep,
     addMistake,
     toggleChecklist,
     setSkippedSafety,
     setIncorrectCall,
+    setBreathingMistake,
     finishGame,
     resetGame,
     completionPercent,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import VRPanel from "../VRPanel";
 import victimAssessmentImg from "@/assets/victim-assessment.png";
 
@@ -7,18 +7,50 @@ interface VictimAssessmentSceneProps {
   onCompleteChecklist: (id: string) => void;
   onMistake: () => void;
   onBreathingMistake: () => void;
+  onFirstAidTimeout: () => void;
+  onRestartFirstAid: () => void;
 }
 
 type AssessStep = "approach" | "consciousness" | "breathing" | "breathing-check" | "bleeding" | "done";
 
-const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onBreathingMistake }: VictimAssessmentSceneProps) => {
+const FIRST_AID_TIMER = 10;
+
+const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onBreathingMistake, onFirstAidTimeout, onRestartFirstAid }: VictimAssessmentSceneProps) => {
   const [step, setStep] = useState<AssessStep>("approach");
   const [breathTimer, setBreathTimer] = useState(10);
   const [timerActive, setTimerActive] = useState(false);
   const [pressureApplied, setPressureApplied] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [chestBreathing, setChestBreathing] = useState(true);
+  
+  // First aid overall timer
+  const [firstAidTimer, setFirstAidTimer] = useState(FIRST_AID_TIMER);
+  const [firstAidActive, setFirstAidActive] = useState(false);
+  const [showTimeoutPrompt, setShowTimeoutPrompt] = useState(false);
 
+  // Start first aid timer when approaching victim
+  useEffect(() => {
+    if (step === "approach" && !firstAidActive) {
+      setFirstAidActive(true);
+    }
+  }, [step, firstAidActive]);
+
+  // First aid countdown
+  useEffect(() => {
+    if (!firstAidActive || step === "done" || showTimeoutPrompt) return;
+    if (firstAidTimer <= 0) {
+      setFirstAidActive(false);
+      setShowTimeoutPrompt(true);
+      onFirstAidTimeout();
+      return;
+    }
+    const t = setInterval(() => {
+      setFirstAidTimer((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(t);
+  }, [firstAidActive, firstAidTimer, step, showTimeoutPrompt, onFirstAidTimeout]);
+
+  // Breathing check timer
   useEffect(() => {
     if (!timerActive || breathTimer <= 0) return;
     const t = setInterval(() => {
@@ -40,7 +72,7 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
     return () => clearInterval(t);
   }, [timerActive, breathTimer, onCompleteChecklist]);
 
-  // Toggle chest animation
+  // Chest animation
   useEffect(() => {
     if (step === "breathing-check" && timerActive) {
       const interval = setInterval(() => setChestBreathing(prev => !prev), 1500);
@@ -74,6 +106,7 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
 
   const handleApplyPressure = () => {
     setPressureApplied(true);
+    setFirstAidActive(false);
     onCompleteChecklist("control-bleeding");
     onCompleteChecklist("provide-help");
     setFeedback({ type: "success", text: "Pressure applied — bleeding controlled." });
@@ -82,6 +115,22 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
       setStep("done");
     }, 1200);
   };
+
+  const handleRestart = () => {
+    setStep("approach");
+    setBreathTimer(10);
+    setTimerActive(false);
+    setPressureApplied(false);
+    setFeedback(null);
+    setChestBreathing(true);
+    setFirstAidTimer(FIRST_AID_TIMER);
+    setFirstAidActive(false);
+    setShowTimeoutPrompt(false);
+    onRestartFirstAid();
+  };
+
+  const timerColor = firstAidTimer <= 3 ? "text-destructive" : firstAidTimer <= 6 ? "text-warning" : "text-success";
+  const timerBarColor = firstAidTimer <= 3 ? "bg-destructive" : firstAidTimer <= 6 ? "bg-warning" : "bg-success";
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen fade-in px-4">
@@ -94,6 +143,46 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
         {step === "bleeding" && "Check the victim for visible injuries and bleeding."}
         {step === "done" && "First aid provided. The victim is stabilized."}
       </div>
+
+      {/* First Aid Timer Bar */}
+      {firstAidActive && step !== "done" && !showTimeoutPrompt && (
+        <div className="w-full max-w-lg mb-3 slide-up">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-mono text-muted-foreground">⏱ First Aid Timer</span>
+            <span className={`text-sm font-mono font-bold ${timerColor} ${firstAidTimer <= 3 ? "blink-prompt" : ""}`}>
+              {firstAidTimer}s
+            </span>
+          </div>
+          <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-1000 ${timerBarColor}`}
+              style={{ width: `${(firstAidTimer / FIRST_AID_TIMER) * 100}%` }}
+            />
+          </div>
+          <div className="text-[10px] font-mono text-muted-foreground mt-1 text-center">
+            Complete first aid before time runs out!
+          </div>
+        </div>
+      )}
+
+      {/* Timeout Prompt */}
+      {showTimeoutPrompt && (
+        <div className="fixed inset-0 bg-background/90 z-50 flex items-center justify-center fade-in backdrop-blur-sm">
+          <VRPanel className="max-w-md text-center">
+            <div className="text-5xl mb-4">⏰</div>
+            <h3 className="font-mono text-xl font-bold text-destructive mb-2">TIME'S UP!</h3>
+            <p className="text-sm text-foreground/80 mb-4">
+              You didn't complete the first aid in time. In a real emergency, every second counts.
+            </p>
+            <div className="feedback-error mb-4">
+              The victim needs immediate attention. Restart the first-aid procedure.
+            </div>
+            <button onClick={handleRestart} className="vr-button-primary w-full pulse-border">
+              ↻ Restart First Aid
+            </button>
+          </VRPanel>
+        </div>
+      )}
 
       {/* Victim visual */}
       <div className="w-full max-w-lg aspect-[4/3] border border-border/40 rounded-lg relative mb-4 overflow-hidden shadow-lg">
@@ -109,7 +198,7 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
           </div>
         )}
 
-        {/* Wound area - visible red */}
+        {/* Wound area */}
         {(step === "bleeding" || step === "done") && (
           <div className={`absolute top-[55%] left-[55%] highlight-glow ${pressureApplied ? '' : 'blink-prompt'}`}>
             <div className="w-14 h-10 rounded-lg bg-destructive/25 border-2 border-destructive/50 flex items-center justify-center">
@@ -120,7 +209,7 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
           </div>
         )}
 
-        {/* Body interaction areas */}
+        {/* Shoulder tap area */}
         {step === "approach" && (
           <div className="absolute top-[25%] left-[35%] w-16 h-12 border-2 border-primary/40 rounded-lg flex items-center justify-center cursor-pointer hover:bg-primary/10 transition-all highlight-glow"
                onClick={handleTapShoulder}>
@@ -156,22 +245,13 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
         <VRPanel sceneLabel="Assessment Step" className="max-w-md slide-up">
           <div className="space-y-3">
             <div className="prompt-text">No response. How do you check breathing?</div>
-            <button
-              onClick={() => handleBreathingChoice("correct")}
-              className="vr-button w-full"
-            >
+            <button onClick={() => handleBreathingChoice("correct")} className="vr-button w-full">
               🫁 Look, listen, and feel for 10 seconds
             </button>
-            <button
-              onClick={() => handleBreathingChoice("wrong1")}
-              className="vr-button w-full"
-            >
+            <button onClick={() => handleBreathingChoice("wrong1")} className="vr-button w-full">
               🪞 Hold a mirror to the mouth
             </button>
-            <button
-              onClick={() => handleBreathingChoice("wrong2")}
-              className="vr-button w-full"
-            >
+            <button onClick={() => handleBreathingChoice("wrong2")} className="vr-button w-full">
               💧 Splash water on the face
             </button>
           </div>

@@ -1,4 +1,5 @@
 import VRPanel from "../VRPanel";
+import rescueChainImg from "@/assets/rescue-chain.png";
 
 interface RescueChainSceneProps {
   onContinue: () => void;
@@ -23,6 +24,8 @@ const RescueChainScene = ({ onContinue }: RescueChainSceneProps) => {
         <p className="text-sm text-muted-foreground text-center mb-6">
           Follow these steps in order to save a life. This training will guide you through each one.
         </p>
+
+        <img src={rescueChainImg} alt="Rescue chain" className="w-32 h-auto mx-auto mb-4 opacity-70" />
 
         <div className="dialogue-box mb-6">
           Learn the correct sequence of emergency response before you begin.

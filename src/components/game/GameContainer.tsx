@@ -11,6 +11,7 @@ import SafetyActionsScene from "./scenes/SafetyActionsScene";
 import EmergencyCallScene from "./scenes/EmergencyCallScene";
 import VictimAssessmentScene from "./scenes/VictimAssessmentScene";
 import FeedbackScene from "./scenes/FeedbackScene";
+import ReadinessScene from "./scenes/ReadinessScene";
 
 const GameContainer = () => {
   const {
@@ -23,14 +24,17 @@ const GameContainer = () => {
     setSkippedSafety,
     setIncorrectCall,
     setBreathingMistake,
+    setFirstAidTimedOut,
     finishGame,
     resetGame,
+    resetFirstAid,
     completionPercent,
+    totalScore,
   } = useGameState();
 
   const [showFlow, setShowFlow] = useState(false);
 
-  const isGameplay = !["main-menu", "rescue-chain", "feedback"].includes(state.currentScene);
+  const isGameplay = !["main-menu", "rescue-chain", "feedback", "readiness"].includes(state.currentScene);
 
   const handleAccidentHotspot = (id: string) => {
     if (id === "triangle") {
@@ -106,6 +110,8 @@ const GameContainer = () => {
             onCompleteChecklist={completeChecklistItem}
             onMistake={() => addMistake(5)}
             onBreathingMistake={setBreathingMistake}
+            onFirstAidTimeout={setFirstAidTimedOut}
+            onRestartFirstAid={resetFirstAid}
           />
         );
       case "feedback":
@@ -113,6 +119,16 @@ const GameContainer = () => {
           <FeedbackScene
             state={state}
             completionPercent={completionPercent}
+            totalScore={totalScore}
+            onRetry={resetGame}
+            onMainMenu={resetGame}
+            onReadiness={() => goToScene("readiness")}
+          />
+        );
+      case "readiness":
+        return (
+          <ReadinessScene
+            totalScore={totalScore}
             onRetry={resetGame}
             onMainMenu={resetGame}
           />
@@ -127,8 +143,10 @@ const GameContainer = () => {
       {/* Top bar */}
       {isGameplay && (
         <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-2 bg-card/90 border-b border-border/40 backdrop-blur-sm">
-          <div className="font-mono text-xs text-primary/70 uppercase tracking-wider">
-            VR First Aid Training
+          <div className="font-mono text-xs text-primary/70 uppercase tracking-wider flex items-center gap-3">
+            <span>VR First Aid Training</span>
+            <span className="text-muted-foreground">|</span>
+            <span className="text-foreground/60">Score: <span className="text-primary font-bold">{totalScore}pts</span></span>
           </div>
           <div className="flex gap-2">
             <button

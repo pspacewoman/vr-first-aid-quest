@@ -8,7 +8,8 @@ export type Scene =
   | "safety-actions"
   | "emergency-call"
   | "victim-assessment"
-  | "feedback";
+  | "feedback"
+  | "readiness";
 
 export interface ChecklistItem {
   id: string;
@@ -22,6 +23,8 @@ export interface RescueChainStep {
   icon: string;
   completed: boolean;
   correct: boolean;
+  maxScore: number;
+  earnedScore: number;
 }
 
 export interface GameState {
@@ -36,6 +39,7 @@ export interface GameState {
   skippedSafety: boolean;
   incorrectCall: boolean;
   breathingMistake: boolean;
+  firstAidTimedOut: boolean;
 }
 
 const initialChecklist: ChecklistItem[] = [
@@ -48,17 +52,17 @@ const initialChecklist: ChecklistItem[] = [
 ];
 
 const initialRescueChain: RescueChainStep[] = [
-  { id: "recognize", label: "Recognize emergency", icon: "👁", completed: false, correct: true },
-  { id: "secure", label: "Secure accident scene", icon: "🔶", completed: false, correct: true },
-  { id: "call", label: "Call emergency services", icon: "📞", completed: false, correct: true },
-  { id: "assess", label: "Assess victim", icon: "🩺", completed: false, correct: true },
-  { id: "first-aid", label: "Provide first aid", icon: "🩹", completed: false, correct: true },
-  { id: "wait", label: "Wait for professional help", icon: "🚑", completed: false, correct: true },
+  { id: "recognize", label: "Recognize emergency", icon: "👁", completed: false, correct: true, maxScore: 15, earnedScore: 0 },
+  { id: "secure", label: "Secure accident scene", icon: "🔶", completed: false, correct: true, maxScore: 20, earnedScore: 0 },
+  { id: "call", label: "Call emergency services", icon: "📞", completed: false, correct: true, maxScore: 20, earnedScore: 0 },
+  { id: "assess", label: "Assess victim", icon: "🩺", completed: false, correct: true, maxScore: 15, earnedScore: 0 },
+  { id: "first-aid", label: "Provide first aid", icon: "🩹", completed: false, correct: true, maxScore: 20, earnedScore: 0 },
+  { id: "wait", label: "Wait for professional help", icon: "🚑", completed: false, correct: true, maxScore: 10, earnedScore: 0 },
 ];
 
 const initialState: GameState = {
   currentScene: "main-menu",
-  score: 100,
+  score: 0,
   mistakes: 0,
   startTime: null,
   elapsedTime: 0,
@@ -68,6 +72,7 @@ const initialState: GameState = {
   skippedSafety: false,
   incorrectCall: false,
   breathingMistake: false,
+  firstAidTimedOut: false,
 };
 
 export function useGameState() {
@@ -93,9 +98,11 @@ export function useGameState() {
   const completeRescueChainStep = useCallback((id: string, correct: boolean = true) => {
     setState((prev) => ({
       ...prev,
-      rescueChain: prev.rescueChain.map((step) =>
-        step.id === id ? { ...step, completed: true, correct } : step
-      ),
+      rescueChain: prev.rescueChain.map((step) => {
+        if (step.id !== id) return step;
+        const earned = correct ? step.maxScore : Math.floor(step.maxScore * 0.3);
+        return { ...step, completed: true, correct, earnedScore: earned };
+      }),
     }));
   }, []);
 
@@ -103,7 +110,6 @@ export function useGameState() {
     setState((prev) => ({
       ...prev,
       mistakes: prev.mistakes + 1,
-      score: Math.max(0, prev.score - penalty),
     }));
   }, []);
 
@@ -123,11 +129,16 @@ export function useGameState() {
     setState((prev) => ({ ...prev, breathingMistake: true }));
   }, []);
 
+  const setFirstAidTimedOut = useCallback(() => {
+    setState((prev) => ({ ...prev, firstAidTimedOut: true }));
+  }, []);
+
   const finishGame = useCallback(() => {
     setState((prev) => ({
       ...prev,
       currentScene: "feedback" as Scene,
       elapsedTime: prev.startTime ? Math.floor((Date.now() - prev.startTime) / 1000) : 0,
+      score: prev.rescueChain.reduce((sum, s) => sum + s.earnedScore, 0),
     }));
   }, []);
 
@@ -139,9 +150,30 @@ export function useGameState() {
     });
   }, []);
 
+  const resetFirstAid = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      currentScene: "victim-assessment" as Scene,
+      checklist: prev.checklist.map((item) =>
+        ["assess-consciousness", "check-breathing", "control-bleeding", "provide-help"].includes(item.id)
+          ? { ...item, completed: false }
+          : item
+      ),
+      rescueChain: prev.rescueChain.map((step) =>
+        ["assess", "first-aid"].includes(step.id)
+          ? { ...step, completed: false, correct: true, earnedScore: 0 }
+          : step
+      ),
+      breathingMistake: false,
+      firstAidTimedOut: false,
+    }));
+  }, []);
+
   const completionPercent = Math.round(
     (state.checklist.filter((c) => c.completed).length / state.checklist.length) * 100
   );
+
+  const totalScore = state.rescueChain.reduce((sum, s) => sum + s.earnedScore, 0);
 
   return {
     state,
@@ -153,8 +185,11 @@ export function useGameState() {
     setSkippedSafety,
     setIncorrectCall,
     setBreathingMistake,
+    setFirstAidTimedOut,
     finishGame,
     resetGame,
+    resetFirstAid,
     completionPercent,
+    totalScore,
   };
 }

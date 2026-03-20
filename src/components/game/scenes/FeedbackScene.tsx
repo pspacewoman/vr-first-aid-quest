@@ -4,16 +4,19 @@ import { GameState } from "@/hooks/useGameState";
 interface FeedbackSceneProps {
   state: GameState;
   completionPercent: number;
+  totalScore: number;
   onRetry: () => void;
   onMainMenu: () => void;
+  onReadiness: () => void;
 }
 
-const FeedbackScene = ({ state, completionPercent, onRetry, onMainMenu }: FeedbackSceneProps) => {
+const FeedbackScene = ({ state, completionPercent, totalScore, onRetry, onMainMenu, onReadiness }: FeedbackSceneProps) => {
   const tips = [];
   if (state.skippedSafety) tips.push("Always secure the scene before approaching the victim.");
   if (state.incorrectCall) tips.push("Provide clear location and injury details to emergency services.");
   if (state.breathingMistake) tips.push("Check breathing by observing chest, listening, and feeling for air.");
-  if (state.score >= 90) tips.push("Excellent performance! Keep practicing to maintain your skills.");
+  if (state.firstAidTimedOut) tips.push("Act quickly — every second counts in a real emergency.");
+  if (totalScore >= 90) tips.push("Excellent performance! Keep practicing to maintain your skills.");
   if (tips.length === 0) tips.push("Great job! You completed all steps correctly.");
 
   const formatTime = (seconds: number) => {
@@ -27,14 +30,14 @@ const FeedbackScene = ({ state, completionPercent, onRetry, onMainMenu }: Feedba
       <div className="scene-label mb-4">Scene 8 — Feedback & Results</div>
 
       <VRPanel title="📊 Training Summary" sceneLabel="Summary Panel" className="w-full max-w-lg mb-6">
-        {/* Score */}
+        {/* Total Score */}
         <div className="text-center mb-6">
           <div className={`font-mono text-6xl font-bold mb-1 ${
-            state.score >= 80 ? "text-success" : state.score >= 50 ? "text-warning" : "text-destructive"
+            totalScore >= 80 ? "text-success" : totalScore >= 50 ? "text-warning" : "text-destructive"
           }`}>
-            {state.score}%
+            {totalScore}%
           </div>
-          <div className="font-mono text-sm text-muted-foreground">Final Score</div>
+          <div className="font-mono text-sm text-muted-foreground">Total Score</div>
         </div>
 
         {/* Stats grid */}
@@ -53,6 +56,40 @@ const FeedbackScene = ({ state, completionPercent, onRetry, onMainMenu }: Feedba
           </div>
         </div>
 
+        {/* Per-step Score Breakdown */}
+        <div className="border border-border/40 rounded-lg p-4 mb-4 bg-muted/20">
+          <div className="font-mono text-xs text-primary/70 mb-3 uppercase tracking-wider">
+            Score Breakdown by Step
+          </div>
+          <div className="space-y-2.5">
+            {state.rescueChain.map((step) => {
+              const pct = step.maxScore > 0 ? Math.round((step.earnedScore / step.maxScore) * 100) : 0;
+              return (
+                <div key={step.id}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-mono text-foreground/80 flex items-center gap-1.5">
+                      <span>{step.icon}</span> {step.label}
+                    </span>
+                    <span className={`text-xs font-mono font-bold ${
+                      step.earnedScore === step.maxScore ? "text-success" : step.earnedScore > 0 ? "text-warning" : "text-destructive"
+                    }`}>
+                      {step.earnedScore}/{step.maxScore} pts ({pct}%)
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-700 ${
+                        step.earnedScore === step.maxScore ? "bg-success" : step.earnedScore > 0 ? "bg-warning" : "bg-destructive/40"
+                      }`}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Tips */}
         <div className="border border-border/40 rounded-lg p-4 mb-4 bg-primary/5">
           <div className="font-mono text-xs text-primary/70 mb-2 uppercase tracking-wider">
@@ -67,7 +104,10 @@ const FeedbackScene = ({ state, completionPercent, onRetry, onMainMenu }: Feedba
 
         {/* Buttons */}
         <div className="space-y-3">
-          <button onClick={onRetry} className="vr-button-primary w-full">
+          <button onClick={onReadiness} className="vr-button-primary w-full pulse-border">
+            ▶ View Readiness Assessment
+          </button>
+          <button onClick={onRetry} className="vr-button w-full">
             ↻ Retry Training
           </button>
           <button onClick={onMainMenu} className="vr-button w-full">

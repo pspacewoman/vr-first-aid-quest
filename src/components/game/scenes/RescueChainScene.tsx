@@ -1,4 +1,5 @@
 import VRPanel from "../VRPanel";
+import rescueChainImg from "@/assets/rescue-chain.png";
 
 interface RescueChainSceneProps {
   onContinue: () => void;

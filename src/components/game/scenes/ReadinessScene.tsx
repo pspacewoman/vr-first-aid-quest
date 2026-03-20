@@ -17,9 +17,7 @@ const ReadinessScene = ({ totalScore, onRetry, onMainMenu }: ReadinessSceneProps
       <VRPanel className="w-full max-w-lg text-center mb-6">
         {/* Big status */}
         <div className="mb-6">
-          <div className={`text-6xl mb-4 ${isReady ? "animate-bounce" : ""}`}>
-            {isReady ? "🏆" : "📝"}
-          </div>
+          <img src={readinessBadge} alt="Readiness badge" className={`w-24 h-24 mx-auto mb-2 ${isReady ? "animate-bounce" : "opacity-40 grayscale"}`} />
           <h2 className={`font-mono text-2xl font-bold mb-2 ${isReady ? "text-success" : "text-warning"}`}>
             {isReady ? "READY FOR UNITY PROTOTYPE" : "MORE PRACTICE NEEDED"}
           </h2>

@@ -1,4 +1,5 @@
 import VRPanel from "../VRPanel";
+import readinessBadge from "@/assets/readiness-badge.png";
 
 interface ReadinessSceneProps {
   totalScore: number;

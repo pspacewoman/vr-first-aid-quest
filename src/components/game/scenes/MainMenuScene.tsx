@@ -35,17 +35,18 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist }: MainMenuSceneProps) => 
         </svg>
       </div>
 
-      <VRPanel sceneLabel="Scene 1 — Main Menu" className="w-full max-w-lg text-center">
-        <div className="mb-8">
-          <img src={vrHeadsetIcon} alt="VR Headset" className="w-24 h-24 mx-auto mb-4 opacity-80" />
-          <div className="text-xs font-mono text-primary/60 mb-2">[ META QUEST 3 ]</div>
+      <VRPanel sceneLabel="Scene 1 — Main Menu" className="w-full max-w-lg text-center relative overflow-hidden">
+        <div className="absolute inset-0 gradient-sweep pointer-events-none" />
+        <div className="mb-8 relative">
+          <img src={vrHeadsetIcon} alt="VR Headset" className="w-24 h-24 mx-auto mb-4 opacity-90 float-anim" />
+          <div className="text-xs font-mono text-primary/70 mb-2">[ META QUEST 3 ]</div>
           <h1 className="font-mono text-2xl font-bold tracking-wider text-foreground mb-2">
             VR FIRST AID
           </h1>
           <h2 className="font-mono text-lg text-primary tracking-wide">
             EMERGENCY TRAINING
           </h2>
-          <div className="mt-4 w-20 h-px bg-primary/30 mx-auto" />
+          <div className="mt-4 w-20 h-px bg-primary/40 mx-auto" />
         </div>
 
         <div className="space-y-3">

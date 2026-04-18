@@ -100,8 +100,8 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist }: MainMenuSceneProps) => 
                       </div>
                       <div className="text-xs text-muted-foreground">{step.desc}</div>
                     </div>
-                    <div className="text-xs font-mono text-primary/50 flex-shrink-0">
-                      {[15, 20, 20, 15, 20, 10][i]}%
+                    <div className="text-xs font-mono text-primary/60 flex-shrink-0">
+                      {step.weight}%
                     </div>
                   </div>
                 ))}

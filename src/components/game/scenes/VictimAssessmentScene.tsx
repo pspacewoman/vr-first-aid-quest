@@ -266,9 +266,20 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
               <div className="font-mono text-center text-lg text-foreground">
                 Checking… <span className="text-primary">{breathTimer}s</span>
               </div>
+              {/* Animated breathing wave */}
+              <svg viewBox="0 0 200 40" className="w-full h-10 bg-muted/40 rounded-lg border border-info/30">
+                <path
+                  d="M0,20 Q25,5 50,20 T100,20 T150,20 T200,20"
+                  fill="none"
+                  stroke="hsl(var(--info))"
+                  strokeWidth="2"
+                  strokeDasharray="4 4"
+                  className="heart-line"
+                />
+              </svg>
               <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-info/60 transition-all duration-1000 rounded-full"
+                  className="h-full bg-info/70 transition-all duration-1000 rounded-full"
                   style={{ width: `${((10 - breathTimer) / 10) * 100}%` }}
                 />
               </div>

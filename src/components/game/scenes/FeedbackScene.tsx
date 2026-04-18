@@ -12,6 +12,22 @@ interface FeedbackSceneProps {
 }
 
 const FeedbackScene = ({ state, completionPercent, totalScore, onRetry, onMainMenu, onReadiness }: FeedbackSceneProps) => {
+  const [animatedScore, setAnimatedScore] = useState(0);
+
+  useEffect(() => {
+    let raf = 0;
+    const start = performance.now();
+    const duration = 1100;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setAnimatedScore(Math.round(totalScore * eased));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [totalScore]);
+
   const tips = [];
   if (state.skippedSafety) tips.push("Always secure the scene before approaching the victim.");
   if (state.incorrectCall) tips.push("Provide clear location and injury details to emergency services.");

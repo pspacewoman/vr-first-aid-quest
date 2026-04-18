@@ -129,8 +129,8 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
     onRestartFirstAid();
   };
 
-  const timerColor = firstAidTimer <= 3 ? "text-destructive" : firstAidTimer <= 6 ? "text-warning" : "text-success";
-  const timerBarColor = firstAidTimer <= 3 ? "bg-destructive" : firstAidTimer <= 6 ? "bg-warning" : "bg-success";
+  const timerColor = firstAidTimer <= 10 ? "text-destructive" : firstAidTimer <= 25 ? "text-warning" : "text-success";
+  const timerBarColor = firstAidTimer <= 10 ? "bg-destructive" : firstAidTimer <= 25 ? "bg-warning" : "bg-success";
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen fade-in px-4">

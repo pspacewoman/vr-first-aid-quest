@@ -53,9 +53,9 @@ const initialChecklist: ChecklistItem[] = [
 
 const initialRescueChain: RescueChainStep[] = [
   { id: "recognize", label: "Recognize emergency", icon: "👁", completed: false, correct: true, maxScore: 15, earnedScore: 0 },
-  { id: "secure", label: "Secure accident scene", icon: "🔶", completed: false, correct: true, maxScore: 20, earnedScore: 0 },
-  { id: "call", label: "Call emergency services", icon: "📞", completed: false, correct: true, maxScore: 20, earnedScore: 0 },
   { id: "assess", label: "Assess victim", icon: "🩺", completed: false, correct: true, maxScore: 15, earnedScore: 0 },
+  { id: "secure", label: "Secure accident scene", icon: "🔺", completed: false, correct: true, maxScore: 20, earnedScore: 0 },
+  { id: "call", label: "Call emergency services", icon: "📞", completed: false, correct: true, maxScore: 20, earnedScore: 0 },
   { id: "first-aid", label: "Provide first aid", icon: "🩹", completed: false, correct: true, maxScore: 20, earnedScore: 0 },
   { id: "wait", label: "Wait for professional help", icon: "🚑", completed: false, correct: true, maxScore: 10, earnedScore: 0 },
 ];

@@ -13,7 +13,7 @@ interface VictimAssessmentSceneProps {
 
 type AssessStep = "approach" | "consciousness" | "breathing" | "breathing-check" | "bleeding" | "done";
 
-const FIRST_AID_TIMER = 10;
+const FIRST_AID_TIMER = 60;
 
 const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onBreathingMistake, onFirstAidTimeout, onRestartFirstAid }: VictimAssessmentSceneProps) => {
   const [step, setStep] = useState<AssessStep>("approach");

@@ -8,12 +8,12 @@ interface MainMenuSceneProps {
 }
 
 const rescueChainSteps = [
-  { icon: "👁", label: "Recognize Emergency", desc: "Identify the situation and stay calm" },
-  { icon: "🔶", label: "Secure Accident Scene", desc: "Protect yourself and others from danger" },
-  { icon: "📞", label: "Call Emergency Services", desc: "Dial 112 and describe the situation" },
-  { icon: "🩺", label: "Assess the Victim", desc: "Check consciousness and breathing" },
-  { icon: "🩹", label: "Provide First Aid", desc: "Apply pressure, stabilize, support" },
-  { icon: "🚑", label: "Wait for Help", desc: "Stay with the victim until help arrives" },
+  { icon: "👁", label: "Recognize Emergency", desc: "Identify the situation and stay calm", weight: 15 },
+  { icon: "🩺", label: "Assess the Victim", desc: "Check consciousness and breathing", weight: 15 },
+  { icon: "🔺", label: "Secure Accident Scene", desc: "Place warning triangle 50m behind (StVO)", weight: 20 },
+  { icon: "📞", label: "Call Emergency Services", desc: "Dial 112 and describe the situation", weight: 20 },
+  { icon: "🩹", label: "Provide First Aid", desc: "Apply pressure, stabilize, support", weight: 20 },
+  { icon: "🚑", label: "Wait for Help", desc: "Stay with the victim until help arrives", weight: 10 },
 ];
 
 const MainMenuScene = ({ onStartGame, onOpenChecklist }: MainMenuSceneProps) => {

@@ -8,12 +8,12 @@ interface MainMenuSceneProps {
 }
 
 const rescueChainSteps = [
-  { icon: "👁", label: "Recognize Emergency", desc: "Identify the situation and stay calm" },
-  { icon: "🔶", label: "Secure Accident Scene", desc: "Protect yourself and others from danger" },
-  { icon: "📞", label: "Call Emergency Services", desc: "Dial 112 and describe the situation" },
-  { icon: "🩺", label: "Assess the Victim", desc: "Check consciousness and breathing" },
-  { icon: "🩹", label: "Provide First Aid", desc: "Apply pressure, stabilize, support" },
-  { icon: "🚑", label: "Wait for Help", desc: "Stay with the victim until help arrives" },
+  { icon: "👁", label: "Recognize Emergency", desc: "Identify the situation and stay calm", weight: 15 },
+  { icon: "🩺", label: "Assess the Victim", desc: "Check consciousness and breathing", weight: 15 },
+  { icon: "🔺", label: "Secure Accident Scene", desc: "Place warning triangle 50m behind (StVO)", weight: 20 },
+  { icon: "📞", label: "Call Emergency Services", desc: "Dial 112 and describe the situation", weight: 20 },
+  { icon: "🩹", label: "Provide First Aid", desc: "Apply pressure, stabilize, support", weight: 20 },
+  { icon: "🚑", label: "Wait for Help", desc: "Stay with the victim until help arrives", weight: 10 },
 ];
 
 const MainMenuScene = ({ onStartGame, onOpenChecklist }: MainMenuSceneProps) => {
@@ -35,17 +35,18 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist }: MainMenuSceneProps) => 
         </svg>
       </div>
 
-      <VRPanel sceneLabel="Scene 1 — Main Menu" className="w-full max-w-lg text-center">
-        <div className="mb-8">
-          <img src={vrHeadsetIcon} alt="VR Headset" className="w-24 h-24 mx-auto mb-4 opacity-80" />
-          <div className="text-xs font-mono text-primary/60 mb-2">[ META QUEST 3 ]</div>
+      <VRPanel sceneLabel="Scene 1 — Main Menu" className="w-full max-w-lg text-center relative overflow-hidden">
+        <div className="absolute inset-0 gradient-sweep pointer-events-none" />
+        <div className="mb-8 relative">
+          <img src={vrHeadsetIcon} alt="VR Headset" className="w-24 h-24 mx-auto mb-4 opacity-90 float-anim" />
+          <div className="text-xs font-mono text-primary/70 mb-2">[ META QUEST 3 ]</div>
           <h1 className="font-mono text-2xl font-bold tracking-wider text-foreground mb-2">
             VR FIRST AID
           </h1>
           <h2 className="font-mono text-lg text-primary tracking-wide">
             EMERGENCY TRAINING
           </h2>
-          <div className="mt-4 w-20 h-px bg-primary/30 mx-auto" />
+          <div className="mt-4 w-20 h-px bg-primary/40 mx-auto" />
         </div>
 
         <div className="space-y-3">
@@ -99,8 +100,8 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist }: MainMenuSceneProps) => 
                       </div>
                       <div className="text-xs text-muted-foreground">{step.desc}</div>
                     </div>
-                    <div className="text-xs font-mono text-primary/50 flex-shrink-0">
-                      {[15, 20, 20, 15, 20, 10][i]}%
+                    <div className="text-xs font-mono text-primary/60 flex-shrink-0">
+                      {step.weight}%
                     </div>
                   </div>
                 ))}

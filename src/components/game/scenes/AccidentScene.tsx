@@ -1,8 +1,26 @@
 import accidentSceneImg from "@/assets/accident-scene.png";
+import InfoTip from "../InfoTip";
 
 interface AccidentSceneProps {
   onSelectHotspot: (id: string) => void;
 }
+
+const WarningTriangle = ({ size = 28 }: { size?: number }) => (
+  <svg viewBox="0 0 40 36" width={size} height={size * 0.9}>
+    <polygon
+      points="20,3 38,33 2,33"
+      fill="hsl(0 0% 100%)"
+      stroke="hsl(0 75% 50%)"
+      strokeWidth="3.5"
+      strokeLinejoin="round"
+    />
+    <polygon
+      points="20,11 32,30 8,30"
+      fill="hsl(0 75% 50%)"
+      opacity="0.85"
+    />
+  </svg>
+);
 
 const AccidentScene = ({ onSelectHotspot }: AccidentSceneProps) => {
   return (
@@ -18,63 +36,55 @@ const AccidentScene = ({ onSelectHotspot }: AccidentSceneProps) => {
       <div className="w-full max-w-3xl aspect-video border border-border/40 rounded-lg relative mb-4 overflow-hidden shadow-lg">
         {/* Background image */}
         <img src={accidentSceneImg} alt="Accident scene" className="absolute inset-0 w-full h-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
 
         {/* Road surface */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[hsl(25,10%,25%)] to-transparent opacity-40" />
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[hsl(215,30%,18%)] to-transparent opacity-60" />
 
-        {/* Crashed car */}
-        <div className="absolute top-[25%] left-[18%] w-36 h-18 bg-card/60 border border-destructive/30 rounded-lg flex items-center justify-center backdrop-blur-sm">
-          <span className="text-xs font-mono text-destructive/80 text-center">🚗 Crashed<br/>Vehicle</span>
+        {/* Crashed car with hazard lights */}
+        <div className="absolute top-[25%] left-[18%] w-36 h-18 bg-card/70 border-2 border-destructive/50 rounded-lg flex items-center justify-center backdrop-blur-sm relative">
+          <div className="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-warning hazard-blink" />
+          <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-warning hazard-blink" />
+          <span className="text-xs font-mono text-destructive text-center">🚗 Crashed<br/>Vehicle</span>
         </div>
 
-        {/* Distance marker for safety */}
+        {/* Distance marker for safety — 50m German law */}
         <div className="absolute bottom-[38%] left-[18%] right-[15%] flex items-center">
-          <div className="flex-1 border-t border-dashed border-warning/50" />
-          <span className="px-2 text-[10px] font-mono text-warning bg-card/70 rounded">~100m safety distance</span>
-          <div className="flex-1 border-t border-dashed border-warning/50" />
+          <div className="flex-1 border-t-2 border-dashed border-warning/60" />
+          <span className="px-2 py-0.5 text-[10px] font-mono text-warning bg-card/80 rounded border border-warning/40">
+            50m (German StVO)
+          </span>
+          <div className="flex-1 border-t-2 border-dashed border-warning/60" />
         </div>
 
-        {/* Victim - with wound coloring */}
-        <div
-          onClick={() => onSelectHotspot("victim")}
-          className="hotspot absolute top-[45%] left-[42%] w-22 h-16 highlight-glow"
-        >
-          <span className="text-xs font-mono">👤 Victim</span>
-          <span className="text-[10px] text-destructive">● Injured</span>
+        {/* Victim - with wound coloring + pulsing glow */}
+        <div className="absolute top-[45%] left-[42%]">
+          <div className="absolute inset-0 rounded-lg bg-destructive/30 animate-ping" style={{ animationDuration: '2s' }} />
+          <div
+            onClick={() => onSelectHotspot("victim")}
+            className="hotspot relative w-22 h-16 highlight-glow"
+          >
+            <span className="text-xs font-mono">👤 Victim</span>
+            <span className="text-[10px] text-destructive">● Injured</span>
+          </div>
         </div>
 
-        {/* Cone 1 */}
+        {/* Warning Triangle 1 — primary at 50m */}
         <div
           onClick={() => onSelectHotspot("triangle")}
-          className="absolute bottom-[18%] right-[12%] cursor-pointer hover:scale-110 transition-transform"
+          className="absolute bottom-[18%] right-[12%] cursor-pointer hover:scale-110 transition-transform triangle-drop"
         >
-          <div className="w-8 h-8 flex items-center justify-center">
-            <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-b-[20px] border-l-transparent border-r-transparent border-b-[hsl(25,90%,55%)]" />
-          </div>
-          <span className="text-[10px] font-mono text-primary/70 block text-center blink-prompt">Cone 1</span>
+          <WarningTriangle size={32} />
+          <span className="text-[10px] font-mono text-primary/90 block text-center blink-prompt">Triangle (50m)</span>
         </div>
 
-        {/* Cone 2 */}
+        {/* Warning Triangle 2 — secondary marker */}
         <div
           onClick={() => onSelectHotspot("triangle")}
-          className="absolute bottom-[22%] right-[25%] cursor-pointer hover:scale-110 transition-transform"
+          className="absolute bottom-[24%] right-[28%] cursor-pointer hover:scale-110 transition-transform"
         >
-          <div className="w-8 h-8 flex items-center justify-center">
-            <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-b-[20px] border-l-transparent border-r-transparent border-b-[hsl(25,90%,55%)]" />
-          </div>
-          <span className="text-[10px] font-mono text-primary/70 block text-center">Cone 2</span>
-        </div>
-
-        {/* Cone 3 */}
-        <div
-          onClick={() => onSelectHotspot("triangle")}
-          className="absolute bottom-[18%] left-[12%] cursor-pointer hover:scale-110 transition-transform"
-        >
-          <div className="w-8 h-8 flex items-center justify-center">
-            <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-b-[20px] border-l-transparent border-r-transparent border-b-[hsl(25,90%,55%)]" />
-          </div>
-          <span className="text-[10px] font-mono text-primary/70 block text-center">Cone 3</span>
+          <WarningTriangle size={24} />
+          <span className="text-[10px] font-mono text-primary/70 block text-center">Marker</span>
         </div>
 
         {/* Phone */}
@@ -85,25 +95,40 @@ const AccidentScene = ({ onSelectHotspot }: AccidentSceneProps) => {
           <span className="text-xs font-mono">📱 Phone</span>
         </div>
 
-        {/* Bystanders */}
-        <div className="absolute top-[18%] right-[42%] flex gap-1.5 opacity-50">
-          <div className="w-5 h-9 bg-muted/40 border border-border/30 rounded" />
-          <div className="w-5 h-9 bg-muted/40 border border-border/30 rounded" />
-          <div className="w-5 h-9 bg-muted/40 border border-border/30 rounded" />
+        {/* Bystanders with sway animation */}
+        <div className="absolute top-[18%] right-[42%] flex gap-1.5 opacity-60">
+          <div className="w-5 h-9 bg-muted/60 border border-border/40 rounded sway" style={{ animationDelay: '0s' }} />
+          <div className="w-5 h-9 bg-muted/60 border border-border/40 rounded sway" style={{ animationDelay: '0.5s' }} />
+          <div className="w-5 h-9 bg-muted/60 border border-border/40 rounded sway" style={{ animationDelay: '1s' }} />
         </div>
-        <div className="absolute top-[16%] right-[39%] text-[10px] font-mono text-muted-foreground/50">
+        <div className="absolute top-[16%] right-[39%] text-[10px] font-mono text-muted-foreground/60">
           Bystanders
+        </div>
+
+        {/* Scene legend */}
+        <div className="absolute top-2 left-2 bg-card/85 backdrop-blur-sm rounded-lg px-2 py-1.5 border border-border/40 text-[9px] font-mono space-y-0.5">
+          <div className="text-muted-foreground/70 uppercase tracking-wider mb-1">Legend</div>
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-destructive" />Victim</div>
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-warning" />Hazard</div>
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-primary" />Action</div>
         </div>
       </div>
 
       {/* Safety instruction */}
-      <div className="bg-warning/10 border border-warning/30 rounded-lg px-4 py-2 max-w-lg text-center mb-2">
+      <div className="bg-warning/10 border border-warning/40 rounded-lg px-4 py-2 max-w-lg text-center mb-2">
         <span className="text-xs font-mono text-warning">
-          ⚠ Place the warning cones at a safe distance (~100m) behind the accident
+          ⚠ Place the warning triangle 50m behind the accident (German road safety law)
         </span>
       </div>
 
-      <div className="mt-2 text-xs font-mono text-muted-foreground text-center">
+      <InfoTip
+        icon="📘"
+        title="German StVO §15"
+        text="50m on city/country roads, 100m on highways for warning triangle placement."
+        className="max-w-lg mt-2"
+      />
+
+      <div className="mt-3 text-xs font-mono text-muted-foreground text-center">
         [ Select interactive elements to proceed ]
       </div>
     </div>

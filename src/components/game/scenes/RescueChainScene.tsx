@@ -7,9 +7,9 @@ interface RescueChainSceneProps {
 
 const steps = [
   { icon: "👁", label: "Recognize Emergency", desc: "Identify the situation and stay calm" },
-  { icon: "🔶", label: "Secure Accident Scene", desc: "Protect yourself and others from danger" },
-  { icon: "📞", label: "Call Emergency Services", desc: "Dial 112 and describe the situation" },
   { icon: "🩺", label: "Assess the Victim", desc: "Check consciousness and breathing" },
+  { icon: "🔺", label: "Secure Accident Scene", desc: "Place warning triangle 50m behind (StVO)" },
+  { icon: "📞", label: "Call Emergency Services", desc: "Dial 112 and describe the situation" },
   { icon: "🩹", label: "Provide First Aid", desc: "Apply pressure, stabilize, support" },
   { icon: "🚑", label: "Wait for Help", desc: "Stay with the victim until help arrives" },
 ];

@@ -109,10 +109,18 @@ const EmergencyCallScene = ({ onComplete, onCompleteChecklist, onMistake, onInco
       {step === "calling" && (
         <VRPanel sceneLabel="Floating UI" className="max-w-md text-center slide-up">
           <div className="space-y-4">
-            <img src={emergencyCallImg} alt="Emergency call" className="w-28 h-28 mx-auto opacity-70 rounded-lg" />
+            <img src={emergencyCallImg} alt="Emergency call" className="w-28 h-28 mx-auto opacity-80 rounded-lg vibrate" />
             <div className="font-mono text-lg text-foreground">📱 Calling 112…</div>
+            <div className="flex justify-center gap-1.5 my-2">
+              <span className="w-2 h-2 rounded-full bg-primary typing-dot" />
+              <span className="w-2 h-2 rounded-full bg-primary typing-dot" />
+              <span className="w-2 h-2 rounded-full bg-primary typing-dot" />
+            </div>
             <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-primary/40 animate-pulse w-full rounded-full" />
+              <div className="h-full bg-primary/60 animate-pulse w-full rounded-full" />
+            </div>
+            <div className="text-[11px] font-mono text-info bg-info/10 border border-info/30 rounded-lg px-3 py-2">
+              🇪🇺 112 — Single emergency number across all EU member states
             </div>
             <button onClick={handleCalling} className="vr-button w-full">
               Connect Call

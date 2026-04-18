@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import drivingSceneImg from "@/assets/driving-scene.png";
+import InfoTip from "../InfoTip";
 
 interface DrivingSceneProps {
   onComplete: () => void;
@@ -33,14 +34,40 @@ const DrivingScene = ({ onComplete }: DrivingSceneProps) => {
       </div>
 
       {/* Road viewport */}
-      <div className="w-full max-w-2xl aspect-video border border-border/40 rounded-lg relative overflow-hidden mb-6 shadow-lg">
+      <div className="w-full max-w-2xl aspect-video border border-border/40 rounded-lg relative overflow-hidden mb-4 shadow-lg">
         <img src={drivingSceneImg} alt="Driving scene" className="w-full h-full object-cover opacity-70" />
-        {/* Road overlay with warm tones */}
+
+        {/* Animated scrolling road lines overlay */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-1/2 pointer-events-none opacity-70 road-scroll"
+          style={{
+            background:
+              "repeating-linear-gradient(to bottom, transparent 0 30px, hsla(0,0%,100%,0.55) 30px 50px)",
+            maskImage: "linear-gradient(to top, black 0%, transparent 90%)",
+            WebkitMaskImage: "linear-gradient(to top, black 0%, transparent 90%)",
+            width: "12px",
+            margin: "0 auto",
+            left: 0,
+            right: 0,
+          }}
+        />
+
         <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-background/20" />
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-card/70 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border/30">
-          <span className="text-xs font-mono text-foreground/60">🚗 First-person driving view</span>
+
+        {/* Steering wheel icon overlay */}
+        <div className="absolute bottom-8 right-8 text-4xl opacity-40 sway">🎚</div>
+
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-card/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border/40">
+          <span className="text-xs font-mono text-foreground/70">🚗 First-person driving view</span>
         </div>
       </div>
+
+      <InfoTip
+        icon="📘"
+        title="Did you know?"
+        text="In Germany, failing to render aid is punishable under §323c StGB."
+        className="max-w-md mb-3"
+      />
 
       {/* Timer / Prompt */}
       {!showPrompt ? (

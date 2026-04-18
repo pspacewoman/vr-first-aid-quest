@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import VRPanel from "../VRPanel";
 import { GameState } from "@/hooks/useGameState";
 
@@ -11,6 +12,22 @@ interface FeedbackSceneProps {
 }
 
 const FeedbackScene = ({ state, completionPercent, totalScore, onRetry, onMainMenu, onReadiness }: FeedbackSceneProps) => {
+  const [animatedScore, setAnimatedScore] = useState(0);
+
+  useEffect(() => {
+    let raf = 0;
+    const start = performance.now();
+    const duration = 1100;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setAnimatedScore(Math.round(totalScore * eased));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [totalScore]);
+
   const tips = [];
   if (state.skippedSafety) tips.push("Always secure the scene before approaching the victim.");
   if (state.incorrectCall) tips.push("Provide clear location and injury details to emergency services.");
@@ -29,13 +46,31 @@ const FeedbackScene = ({ state, completionPercent, totalScore, onRetry, onMainMe
     <div className="flex flex-col items-center justify-center min-h-screen fade-in px-4 py-8">
       <div className="scene-label mb-4">Scene 8 — Feedback & Results</div>
 
-      <VRPanel title="📊 Training Summary" sceneLabel="Summary Panel" className="w-full max-w-lg mb-6">
+      <VRPanel title="📊 Training Summary" sceneLabel="Summary Panel" className="w-full max-w-lg mb-6 relative overflow-hidden">
+        {totalScore >= 80 && (
+          <div className="pointer-events-none absolute inset-0 text-2xl select-none">
+            {["🎉","✨","🎊","⭐","💫","🎉","✨"].map((e, i) => (
+              <span
+                key={i}
+                className="absolute float-anim"
+                style={{
+                  left: `${10 + i * 12}%`,
+                  top: `${5 + (i % 3) * 8}%`,
+                  animationDelay: `${i * 0.25}s`,
+                  animationDuration: `${2.5 + (i % 3) * 0.5}s`,
+                }}
+              >
+                {e}
+              </span>
+            ))}
+          </div>
+        )}
         {/* Total Score */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-6 relative">
           <div className={`font-mono text-6xl font-bold mb-1 ${
             totalScore >= 80 ? "text-success" : totalScore >= 50 ? "text-warning" : "text-destructive"
           }`}>
-            {totalScore}%
+            {animatedScore}%
           </div>
           <div className="font-mono text-sm text-muted-foreground">Total Score</div>
         </div>

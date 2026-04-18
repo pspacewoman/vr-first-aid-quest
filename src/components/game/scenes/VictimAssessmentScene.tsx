@@ -13,7 +13,7 @@ interface VictimAssessmentSceneProps {
 
 type AssessStep = "approach" | "consciousness" | "breathing" | "breathing-check" | "bleeding" | "done";
 
-const FIRST_AID_TIMER = 10;
+const FIRST_AID_TIMER = 60;
 
 const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onBreathingMistake, onFirstAidTimeout, onRestartFirstAid }: VictimAssessmentSceneProps) => {
   const [step, setStep] = useState<AssessStep>("approach");
@@ -129,8 +129,8 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
     onRestartFirstAid();
   };
 
-  const timerColor = firstAidTimer <= 3 ? "text-destructive" : firstAidTimer <= 6 ? "text-warning" : "text-success";
-  const timerBarColor = firstAidTimer <= 3 ? "bg-destructive" : firstAidTimer <= 6 ? "bg-warning" : "bg-success";
+  const timerColor = firstAidTimer <= 10 ? "text-destructive" : firstAidTimer <= 25 ? "text-warning" : "text-success";
+  const timerBarColor = firstAidTimer <= 10 ? "bg-destructive" : firstAidTimer <= 25 ? "bg-warning" : "bg-success";
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen fade-in px-4">
@@ -149,7 +149,7 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
         <div className="w-full max-w-lg mb-3 slide-up">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-mono text-muted-foreground">⏱ First Aid Timer</span>
-            <span className={`text-sm font-mono font-bold ${timerColor} ${firstAidTimer <= 3 ? "blink-prompt" : ""}`}>
+            <span className={`text-sm font-mono font-bold ${timerColor} ${firstAidTimer <= 10 ? "blink-prompt" : ""}`}>
               {firstAidTimer}s
             </span>
           </div>
@@ -266,9 +266,20 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
               <div className="font-mono text-center text-lg text-foreground">
                 Checking… <span className="text-primary">{breathTimer}s</span>
               </div>
+              {/* Animated breathing wave */}
+              <svg viewBox="0 0 200 40" className="w-full h-10 bg-muted/40 rounded-lg border border-info/30">
+                <path
+                  d="M0,20 Q25,5 50,20 T100,20 T150,20 T200,20"
+                  fill="none"
+                  stroke="hsl(var(--info))"
+                  strokeWidth="2"
+                  strokeDasharray="4 4"
+                  className="heart-line"
+                />
+              </svg>
               <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-info/60 transition-all duration-1000 rounded-full"
+                  className="h-full bg-info/70 transition-all duration-1000 rounded-full"
                   style={{ width: `${((10 - breathTimer) / 10) * 100}%` }}
                 />
               </div>

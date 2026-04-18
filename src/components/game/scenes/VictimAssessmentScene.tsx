@@ -149,7 +149,7 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
         <div className="w-full max-w-lg mb-3 slide-up">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-mono text-muted-foreground">⏱ First Aid Timer</span>
-            <span className={`text-sm font-mono font-bold ${timerColor} ${firstAidTimer <= 3 ? "blink-prompt" : ""}`}>
+            <span className={`text-sm font-mono font-bold ${timerColor} ${firstAidTimer <= 10 ? "blink-prompt" : ""}`}>
               {firstAidTimer}s
             </span>
           </div>

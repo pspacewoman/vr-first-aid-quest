@@ -176,6 +176,14 @@ const GameContainer = () => {
               Checklist ☐ {completionPercent}%
             </button>
             <button
+              onClick={() => setMuted((m) => !m)}
+              aria-label={muted ? "Unmute ambience" : "Mute ambience"}
+              title={muted ? "Unmute ambience" : "Mute ambience"}
+              className="font-mono text-xs px-3 py-1 border border-border/40 rounded-lg hover:bg-accent transition-colors"
+            >
+              {muted ? "Audio 🔇" : "Audio 🔊"}
+            </button>
+            <button
               onClick={resetGame}
               className="font-mono text-xs px-3 py-1 border border-destructive/30 rounded-lg text-destructive/60 hover:text-destructive hover:bg-destructive/5 transition-colors"
             >

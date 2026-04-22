@@ -5,6 +5,8 @@ import vrHeadsetIcon from "@/assets/vr-headset-icon.png";
 interface MainMenuSceneProps {
   onStartGame: () => void;
   onOpenChecklist: () => void;
+  soundOn: boolean;
+  onToggleSound: (on: boolean) => void;
 }
 
 const rescueChainSteps = [
@@ -16,10 +18,9 @@ const rescueChainSteps = [
   { icon: "🚑", label: "Wait for Help", desc: "Stay with the victim until help arrives", weight: 10 },
 ];
 
-const MainMenuScene = ({ onStartGame, onOpenChecklist }: MainMenuSceneProps) => {
+const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }: MainMenuSceneProps) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showRescueChain, setShowRescueChain] = useState(false);
-  const [soundOn, setSoundOn] = useState(true);
   const [movementMode, setMovementMode] = useState<"teleport" | "smooth">("teleport");
 
   return (

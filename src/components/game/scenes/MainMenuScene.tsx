@@ -5,6 +5,8 @@ import vrHeadsetIcon from "@/assets/vr-headset-icon.png";
 interface MainMenuSceneProps {
   onStartGame: () => void;
   onOpenChecklist: () => void;
+  soundOn: boolean;
+  onToggleSound: (on: boolean) => void;
 }
 
 const rescueChainSteps = [
@@ -16,10 +18,9 @@ const rescueChainSteps = [
   { icon: "🚑", label: "Wait for Help", desc: "Stay with the victim until help arrives", weight: 10 },
 ];
 
-const MainMenuScene = ({ onStartGame, onOpenChecklist }: MainMenuSceneProps) => {
+const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }: MainMenuSceneProps) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showRescueChain, setShowRescueChain] = useState(false);
-  const [soundOn, setSoundOn] = useState(true);
   const [movementMode, setMovementMode] = useState<"teleport" | "smooth">("teleport");
 
   return (
@@ -147,7 +148,7 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist }: MainMenuSceneProps) => 
               <div className="flex items-center justify-between p-3 border border-border/40 rounded-lg">
                 <span className="font-mono text-sm">Sound</span>
                 <button
-                  onClick={() => setSoundOn(!soundOn)}
+                  onClick={() => onToggleSound(!soundOn)}
                   className={`font-mono text-sm px-4 py-1 border rounded-lg transition-colors ${
                     soundOn ? "border-success/50 text-success bg-success/10" : "border-destructive/50 text-destructive bg-destructive/10"
                   }`}

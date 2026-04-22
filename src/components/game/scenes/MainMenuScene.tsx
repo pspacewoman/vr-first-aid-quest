@@ -148,7 +148,7 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }:
               <div className="flex items-center justify-between p-3 border border-border/40 rounded-lg">
                 <span className="font-mono text-sm">Sound</span>
                 <button
-                  onClick={() => setSoundOn(!soundOn)}
+                  onClick={() => onToggleSound(!soundOn)}
                   className={`font-mono text-sm px-4 py-1 border rounded-lg transition-colors ${
                     soundOn ? "border-success/50 text-success bg-success/10" : "border-destructive/50 text-destructive bg-destructive/10"
                   }`}

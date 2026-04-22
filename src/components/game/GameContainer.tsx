@@ -83,6 +83,8 @@ const GameContainer = () => {
           <MainMenuScene
             onStartGame={() => goToScene("rescue-chain")}
             onOpenChecklist={toggleChecklist}
+            soundOn={!muted}
+            onToggleSound={(on) => setMuted(!on)}
           />
         );
       case "rescue-chain":

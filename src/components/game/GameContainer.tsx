@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useGameState } from "@/hooks/useGameState";
+import { useSceneAudio } from "@/hooks/useSceneAudio";
 import ChecklistOverlay from "./ChecklistOverlay";
 import SideChecklist from "./SideChecklist";
 import FlowDiagram from "./FlowDiagram";
@@ -34,6 +35,9 @@ const GameContainer = () => {
   } = useGameState();
 
   const [showFlow, setShowFlow] = useState(false);
+  const [muted, setMuted] = useState(false);
+
+  useSceneAudio(state.currentScene, muted);
 
   const isGameplay = !["main-menu", "rescue-chain", "feedback", "readiness", "unity-preview"].includes(state.currentScene);
 
@@ -170,6 +174,14 @@ const GameContainer = () => {
               className="font-mono text-xs px-3 py-1 border border-border/40 rounded-lg hover:bg-accent transition-colors"
             >
               Checklist ☐ {completionPercent}%
+            </button>
+            <button
+              onClick={() => setMuted((m) => !m)}
+              aria-label={muted ? "Unmute ambience" : "Mute ambience"}
+              title={muted ? "Unmute ambience" : "Mute ambience"}
+              className="font-mono text-xs px-3 py-1 border border-border/40 rounded-lg hover:bg-accent transition-colors"
+            >
+              {muted ? "Audio 🔇" : "Audio 🔊"}
             </button>
             <button
               onClick={resetGame}

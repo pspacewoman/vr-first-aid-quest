@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useGameState } from "@/hooks/useGameState";
+import { useSceneAudio } from "@/hooks/useSceneAudio";
 import ChecklistOverlay from "./ChecklistOverlay";
 import SideChecklist from "./SideChecklist";
 import FlowDiagram from "./FlowDiagram";
@@ -34,6 +35,9 @@ const GameContainer = () => {
   } = useGameState();
 
   const [showFlow, setShowFlow] = useState(false);
+  const [muted, setMuted] = useState(false);
+
+  useSceneAudio(state.currentScene, muted);
 
   const isGameplay = !["main-menu", "rescue-chain", "feedback", "readiness", "unity-preview"].includes(state.currentScene);
 

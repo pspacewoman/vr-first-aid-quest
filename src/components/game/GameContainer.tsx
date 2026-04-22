@@ -12,6 +12,7 @@ import EmergencyCallScene from "./scenes/EmergencyCallScene";
 import VictimAssessmentScene from "./scenes/VictimAssessmentScene";
 import FeedbackScene from "./scenes/FeedbackScene";
 import ReadinessScene from "./scenes/ReadinessScene";
+import UnityPreviewScene from "./scenes/UnityPreviewScene";
 
 const GameContainer = () => {
   const {
@@ -34,7 +35,7 @@ const GameContainer = () => {
 
   const [showFlow, setShowFlow] = useState(false);
 
-  const isGameplay = !["main-menu", "rescue-chain", "feedback", "readiness"].includes(state.currentScene);
+  const isGameplay = !["main-menu", "rescue-chain", "feedback", "readiness", "unity-preview"].includes(state.currentScene);
 
   const handleAccidentHotspot = (id: string) => {
     if (id === "triangle") {
@@ -123,6 +124,7 @@ const GameContainer = () => {
             onRetry={resetGame}
             onMainMenu={resetGame}
             onReadiness={() => goToScene("readiness")}
+            onUnityPreview={() => goToScene("unity-preview")}
           />
         );
       case "readiness":
@@ -130,6 +132,14 @@ const GameContainer = () => {
           <ReadinessScene
             totalScore={totalScore}
             onRetry={resetGame}
+            onMainMenu={resetGame}
+          />
+        );
+      case "unity-preview":
+        return (
+          <UnityPreviewScene
+            totalScore={totalScore}
+            onBack={() => goToScene("feedback")}
             onMainMenu={resetGame}
           />
         );

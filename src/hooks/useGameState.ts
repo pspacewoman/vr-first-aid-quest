@@ -9,7 +9,8 @@ export type Scene =
   | "emergency-call"
   | "victim-assessment"
   | "feedback"
-  | "readiness";
+  | "readiness"
+  | "unity-preview";
 
 export interface ChecklistItem {
   id: string;

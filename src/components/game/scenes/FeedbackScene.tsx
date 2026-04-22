@@ -9,9 +9,10 @@ interface FeedbackSceneProps {
   onRetry: () => void;
   onMainMenu: () => void;
   onReadiness: () => void;
+  onUnityPreview: () => void;
 }
 
-const FeedbackScene = ({ state, completionPercent, totalScore, onRetry, onMainMenu, onReadiness }: FeedbackSceneProps) => {
+const FeedbackScene = ({ state, completionPercent, totalScore, onRetry, onMainMenu, onReadiness, onUnityPreview }: FeedbackSceneProps) => {
   const [animatedScore, setAnimatedScore] = useState(0);
 
   useEffect(() => {
@@ -139,6 +140,14 @@ const FeedbackScene = ({ state, completionPercent, totalScore, onRetry, onMainMe
 
         {/* Buttons */}
         <div className="space-y-3">
+          {totalScore >= 80 && (
+            <button
+              onClick={onUnityPreview}
+              className="vr-button-primary w-full pulse-border bg-gradient-to-r from-success/30 via-primary/30 to-success/30 border-success/50"
+            >
+              🥽 Preview Unity VR Prototype (Unlocked)
+            </button>
+          )}
           <button onClick={onReadiness} className="vr-button-primary w-full pulse-border">
             ▶ View Readiness Assessment
           </button>

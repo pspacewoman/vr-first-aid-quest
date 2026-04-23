@@ -1,6 +1,7 @@
 import { useState } from "react";
 import VRPanel from "../VRPanel";
 import emergencyCallImg from "@/assets/emergency-call.png";
+import { playCorrect, playWrong } from "@/lib/feedbackSound";
 
 interface EmergencyCallSceneProps {
   onComplete: () => void;
@@ -67,6 +68,7 @@ const EmergencyCallScene = ({ onComplete, onCompleteChecklist, onMistake, onInco
     const option = current.options[optionIndex];
 
     if (!option.correct) {
+      playWrong();
       setShowFeedback({ type: "error", text: "Incorrect response. Provide clear, specific information to emergency services." });
       onMistake();
       onIncorrectCall();
@@ -74,6 +76,7 @@ const EmergencyCallScene = ({ onComplete, onCompleteChecklist, onMistake, onInco
       return;
     }
 
+    playCorrect();
     // Add player response
     const newHistory: DialogueLine[] = [
       ...dialogueHistory,

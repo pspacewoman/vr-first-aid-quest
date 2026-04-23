@@ -1,6 +1,8 @@
 import { useState } from "react";
 import VRPanel from "../VRPanel";
 import unityPreview from "@/assets/unity-prototype-preview.png";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 interface UnityPreviewSceneProps {
   totalScore: number;
@@ -19,6 +21,37 @@ const features = [
 
 const UnityPreviewScene = ({ totalScore, onBack, onMainMenu }: UnityPreviewSceneProps) => {
   const [zoomed, setZoomed] = useState(false);
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const showRequestForm = totalScore >= 100;
+
+  const handleSubmitRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubmitting(true);
+    const { error } = await supabase.from("prototype_access_requests").insert({
+      email: email.trim(),
+      score: totalScore,
+      message: message.trim() || null,
+    });
+    setSubmitting(false);
+    if (error) {
+      toast({
+        title: "Submission failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+    setSubmitted(true);
+    toast({
+      title: "Request sent ✅",
+      description: "The prototype owner has been notified and will reach out via email.",
+    });
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen fade-in px-4 py-12">

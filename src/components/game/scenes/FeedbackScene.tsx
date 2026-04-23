@@ -201,6 +201,12 @@ const FeedbackScene = ({ state, completionPercent, totalScore, onRetry, onMainMe
           ))}
         </div>
       </VRPanel>
+
+      <div className="w-full max-w-lg mt-6 text-[11px] text-muted-foreground italic leading-relaxed text-center px-2">
+        <strong className="text-warning not-italic">NDA Disclosure:</strong> This prototype, your assessment results,
+        and all associated training content are confidential and shared under a Non-Disclosure Agreement. Do not
+        reproduce, distribute, or share any part of this application without prior written consent from the developer.
+      </div>
     </div>
   );
 };

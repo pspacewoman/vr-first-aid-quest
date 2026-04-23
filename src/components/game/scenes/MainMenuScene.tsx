@@ -192,6 +192,40 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }:
               <div className="text-xs text-muted-foreground border-t border-border/40 pt-3">
                 Research context: HCI Master Thesis · University of Siegen · 2025/26 · Compliant with German <strong>StVO</strong> road-safety regulations (e.g., 50 m warning-triangle distance).
               </div>
+
+              <div className="border-t border-border/40 pt-3">
+                <div className="font-mono text-xs text-primary/70 uppercase tracking-wider mb-2">Developer / Designer</div>
+                <div className="text-sm text-foreground font-semibold">Priyanshi Singh</div>
+                <div className="text-xs text-foreground/80 mt-1 space-y-0.5">
+                  <div>
+                    LinkedIn:{" "}
+                    <a
+                      href="https://www.linkedin.com/in/spriyanshi/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline hover:text-primary/80 break-all"
+                    >
+                      linkedin.com/in/spriyanshi
+                    </a>
+                  </div>
+                  <div>
+                    Email:{" "}
+                    <a
+                      href="mailto:priyanshiuiux@gmail.com"
+                      className="text-primary underline hover:text-primary/80 break-all"
+                    >
+                      priyanshiuiux@gmail.com
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-[11px] text-muted-foreground italic border-t border-border/40 pt-3 leading-relaxed">
+                <strong className="text-warning not-italic">NDA Disclosure:</strong> This prototype and all associated
+                research materials are confidential and shared under a Non-Disclosure Agreement. Do not reproduce,
+                distribute, or share any part of this application or its contents without prior written consent from
+                the developer.
+              </div>
             </div>
 
             <button onClick={() => setShowAbout(false)} className="vr-button w-full">

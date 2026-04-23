@@ -53,11 +53,8 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }:
             EMERGENCY RESPONSE
           </h1>
           <h2 className="font-mono text-lg text-primary tracking-wide">
-            TRAINING
+            FIRST-AID TRAINING
           </h2>
-          <p className="mt-2 font-mono text-sm text-muted-foreground tracking-widest uppercase">
-            First-Aid Training
-          </p>
           <div className="mt-4 w-20 h-px bg-primary/40 mx-auto" />
         </div>
 

@@ -21,6 +21,7 @@ const rescueChainSteps = [
 const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }: MainMenuSceneProps) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showRescueChain, setShowRescueChain] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [movementMode, setMovementMode] = useState<"teleport" | "smooth">("teleport");
 
   return (
@@ -56,6 +57,9 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }:
           </button>
           <button onClick={() => setShowRescueChain(true)} className="vr-button w-full">
             🔗 Rescue Chain
+          </button>
+          <button onClick={() => setShowAbout(true)} className="vr-button w-full">
+            ℹ About
           </button>
           <button onClick={() => setShowSettings(true)} className="vr-button w-full">
             ⚙ Settings
@@ -132,6 +136,58 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }:
             </div>
 
             <button onClick={() => setShowRescueChain(false)} className="vr-button w-full">
+              Close
+            </button>
+          </VRPanel>
+        </div>
+      )}
+
+      {/* About Overlay */}
+      {showAbout && (
+        <div className="fixed inset-0 bg-background/80 z-50 flex items-center justify-center fade-in backdrop-blur-sm overflow-y-auto py-8">
+          <VRPanel title="ℹ About this Application" sceneLabel="Purpose & Usage" className="w-full max-w-2xl mx-4">
+            <div className="bg-primary/10 border border-primary/30 rounded-lg px-4 py-3 mb-5">
+              <p className="text-sm font-mono text-primary text-center">
+                Low-Fidelity Web Prototype for the <span className="font-bold">VR First Aid Training</span> research project
+              </p>
+            </div>
+
+            <div className="space-y-4 text-sm text-foreground/85 mb-5">
+              <div>
+                <div className="font-mono text-xs text-primary/70 uppercase tracking-wider mb-1">Why was this developed?</div>
+                <p className="leading-relaxed">
+                  This application was built as part of an <strong>HCI Master&apos;s thesis</strong> at the University of Siegen
+                  to explore how immersive VR can teach the German <strong>Rescue Chain</strong> (Rettungskette)
+                  to lay first responders. It follows the <strong>ADDIE</strong> instructional-design framework
+                  and is the low-fidelity counterpart to a high-fidelity Unity VR prototype targeting the <strong>Meta Quest 3</strong>.
+                </p>
+              </div>
+
+              <div>
+                <div className="font-mono text-xs text-primary/70 uppercase tracking-wider mb-1">Why use it before the Unity VR prototype?</div>
+                <ul className="list-disc pl-5 space-y-1.5 leading-relaxed">
+                  <li>Learn the <strong>flow and decision points</strong> of the rescue chain in a low-risk 2D environment first.</li>
+                  <li>Reduce <strong>cognitive load</strong> when entering full immersion — you already know <em>what</em> to do, so VR can focus on <em>how</em>.</li>
+                  <li>Build familiarity with checklists, scoring, and the 80% mastery threshold required to <strong>unlock the Unity VR scenario</strong>.</li>
+                  <li>Provides a <strong>baseline measure</strong> for comparing learning gains between low- and high-fidelity conditions.</li>
+                </ul>
+              </div>
+
+              <div>
+                <div className="font-mono text-xs text-primary/70 uppercase tracking-wider mb-1">Recommended usage</div>
+                <ol className="list-decimal pl-5 space-y-1.5 leading-relaxed">
+                  <li>Read the <strong>Rescue Chain</strong> roadmap on the main menu.</li>
+                  <li>Complete one full playthrough — aim for ≥ 80% to unlock the Unity preview.</li>
+                  <li>Review feedback &amp; mistakes, then proceed to the <strong>high-fidelity Unity VR training</strong>.</li>
+                </ol>
+              </div>
+
+              <div className="text-xs text-muted-foreground border-t border-border/40 pt-3">
+                Research context: HCI Master Thesis · University of Siegen · 2025/26 · Compliant with German <strong>StVO</strong> road-safety regulations (e.g., 50 m warning-triangle distance).
+              </div>
+            </div>
+
+            <button onClick={() => setShowAbout(false)} className="vr-button w-full">
               Close
             </button>
           </VRPanel>

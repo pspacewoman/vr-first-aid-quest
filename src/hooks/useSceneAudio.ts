@@ -25,80 +25,90 @@ type CueConfig = {
 
 const SCENE_CUES: Partial<Record<Scene, CueConfig>> = {
   "main-menu": {
-    freqs: [220, 330],
+    // Calm, welcoming "lobby" chord (A3 + C#4 + E4)
+    freqs: [220, 277.2, 329.6],
     type: "sine",
-    gain: 0.04,
-    lfoDepth: 2,
-    lfoRate: 0.15,
-  },
-  "rescue-chain": {
-    freqs: [196, 294, 392],
-    type: "triangle",
     gain: 0.035,
     lfoDepth: 1.5,
-    lfoRate: 0.1,
-  },
-  driving: {
-    // Pleasant, calm motion ambience
-    freqs: [174.6, 261.6],
-    type: "sine",
-    gain: 0.05,
-    lfoDepth: 1,
-    lfoRate: 0.2,
-    noise: { gain: 0.02, filterFreq: 600 },
-  },
-  accident: {
-    // Serious / tense low drone
-    freqs: [82.4, 110, 138.6],
-    type: "sawtooth",
-    gain: 0.04,
-    lfoDepth: 3,
-    lfoRate: 0.25,
-    noise: { gain: 0.015, filterFreq: 300 },
-  },
-  "safety-actions": {
-    // Alert but focused
-    freqs: [146.8, 220],
-    type: "triangle",
-    gain: 0.035,
-    lfoDepth: 2,
-    lfoRate: 0.4,
-  },
-  "emergency-call": {
-    // Subtle phone-line tone bed
-    freqs: [350, 440],
-    type: "sine",
-    gain: 0.025,
-    lfoDepth: 1,
-    lfoRate: 0.08,
-  },
-  "victim-assessment": {
-    // Heartbeat-like pulse + low pad
-    freqs: [110, 165],
-    type: "sine",
-    gain: 0.035,
-    pulse: { freq: 60, intervalMs: 900, durationMs: 120, gain: 0.06 },
-  },
-  feedback: {
-    freqs: [261.6, 329.6, 392],
-    type: "sine",
-    gain: 0.04,
-    lfoDepth: 1,
-    lfoRate: 0.1,
-  },
-  readiness: {
-    freqs: [261.6, 392, 523.2],
-    type: "triangle",
-    gain: 0.045,
-    lfoDepth: 1.2,
     lfoRate: 0.12,
   },
-  "unity-preview": {
-    freqs: [196, 293.6, 440],
+  "rescue-chain": {
+    // Focused, instructional — open fifth pad
+    freqs: [146.8, 220, 293.6],
+    type: "triangle",
+    gain: 0.03,
+    lfoDepth: 0.8,
+    lfoRate: 0.07,
+  },
+  driving: {
+    // Pleasant motion — bright pad + prominent road hiss
+    freqs: [196, 293.6, 392],
     type: "sine",
     gain: 0.04,
-    lfoDepth: 1.5,
-    lfoRate: 0.1,
+    lfoDepth: 1,
+    lfoRate: 0.2,
+    noise: { gain: 0.05, filterFreq: 900 },
+  },
+  accident: {
+    // Serious / tense — dissonant low sawtooth + dark rumble
+    freqs: [55, 82.4, 87.3],
+    type: "sawtooth",
+    gain: 0.06,
+    lfoDepth: 5,
+    lfoRate: 0.3,
+    noise: { gain: 0.04, filterFreq: 220 },
+  },
+  "safety-actions": {
+    // Alert beacon — square pulse evoking warning lights
+    freqs: [261.6, 392],
+    type: "square",
+    gain: 0.025,
+    lfoDepth: 4,
+    lfoRate: 0.6,
+    pulse: { freq: 880, intervalMs: 1400, durationMs: 90, gain: 0.04 },
+  },
+  "emergency-call": {
+    // Phone-line dial tone bed (350Hz + 440Hz like real telephony)
+    freqs: [350, 440],
+    type: "sine",
+    gain: 0.03,
+    lfoDepth: 0,
+    lfoRate: 0,
+    pulse: { freq: 480, intervalMs: 2000, durationMs: 250, gain: 0.025 },
+  },
+  "victim-assessment": {
+    // Heartbeat-like pulse over a low, anxious pad
+    freqs: [98, 146.8],
+    type: "triangle",
+    gain: 0.03,
+    lfoDepth: 2,
+    lfoRate: 0.18,
+    pulse: { freq: 55, intervalMs: 850, durationMs: 140, gain: 0.09 },
+  },
+  feedback: {
+    // Resolution chord — major triad C/E/G
+    freqs: [261.6, 329.6, 392, 523.2],
+    type: "sine",
+    gain: 0.04,
+    lfoDepth: 0.6,
+    lfoRate: 0.08,
+  },
+  readiness: {
+    // Triumphant — bright triangle stack
+    freqs: [329.6, 493.9, 659.3],
+    type: "triangle",
+    gain: 0.045,
+    lfoDepth: 1,
+    lfoRate: 0.15,
+  },
+  "unity-preview": {
+    // Cinematic / sci-fi reveal
+    freqs: [110, 164.8, 246.9, 329.6],
+    type: "sawtooth",
+    gain: 0.025,
+    lfoDepth: 2.5,
+    lfoRate: 0.05,
+    noise: { gain: 0.015, filterFreq: 1200 },
   },
 };
 

@@ -130,6 +130,70 @@ const UnityPreviewScene = ({ totalScore, onBack, onMainMenu }: UnityPreviewScene
           in immersive 3D.
         </div>
 
+        {/* Request prototype access (only at perfect score) */}
+        {showRequestForm && (
+          <div className="mb-6 rounded-xl border-2 border-success/40 bg-success/5 p-4 fade-in">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">🏆</span>
+              <div className="font-mono text-sm font-bold text-success">
+                Perfect Score — Request Build Access
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+              You scored <strong className="text-success">100%</strong>. Submit your email to ask the prototype owner
+              to share the high-fidelity Unity VR build for testing on your Meta Quest 3.
+            </p>
+
+            {submitted ? (
+              <div className="rounded-lg border border-success/40 bg-success/10 p-3 text-center">
+                <div className="font-mono text-sm font-bold text-success mb-1">
+                  ✅ Request submitted
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  The owner will contact you at <span className="text-foreground font-mono">{email}</span> with build access details.
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmitRequest} className="space-y-3">
+                <div>
+                  <label htmlFor="req-email" className="block font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+                    Your email
+                  </label>
+                  <input
+                    id="req-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border/60 text-sm font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 transition"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="req-msg" className="block font-mono text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+                    Message (optional)
+                  </label>
+                  <textarea
+                    id="req-msg"
+                    rows={3}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Briefly describe your testing context (HCI student, researcher, etc.)"
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border/60 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 transition resize-none"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={submitting || !email.trim()}
+                  className="vr-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? "Submitting…" : "📨 Request Prototype Access"}
+                </button>
+              </form>
+            )}
+          </div>
+        )}
+
         <div className="space-y-3">
           <a
             href="#"

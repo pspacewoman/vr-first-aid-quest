@@ -2,6 +2,7 @@ import { useState } from "react";
 import VRPanel from "../VRPanel";
 import safetyActionsImg from "@/assets/safety-actions.png";
 import InfoTip from "../InfoTip";
+import { playCorrect } from "@/lib/feedbackSound";
 
 interface SafetyActionsSceneProps {
   onComplete: () => void;
@@ -31,6 +32,7 @@ const SafetyActionsScene = ({ onComplete, onSkip, onCompleteChecklist }: SafetyA
     const next = trianglesPlaced + 1;
     setTrianglesPlaced(next);
     setRippleKey((k) => k + 1);
+    playCorrect();
     if (next >= 3) {
       setShowSuccess(true);
       onCompleteChecklist("secure-scene");

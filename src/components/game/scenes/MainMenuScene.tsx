@@ -40,13 +40,20 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }:
       <VRPanel sceneLabel="Scene 1 — Main Menu" className="w-full max-w-lg text-center relative overflow-hidden">
         <div className="absolute inset-0 gradient-sweep pointer-events-none" />
         <div className="mb-8 relative">
-          <img src={vrHeadsetIcon} alt="VR Headset" className="w-24 h-24 mx-auto mb-4 opacity-90 float-anim" />
+          <img
+            src={vrHeadsetIcon}
+            alt="VR Headset"
+            width={512}
+            height={512}
+            className="w-24 h-24 mx-auto mb-4 float-anim drop-shadow-[0_0_18px_hsl(var(--primary)/0.55)]"
+            loading="lazy"
+          />
           <div className="text-xs font-mono text-primary/70 mb-2">[ META QUEST 3 ]</div>
           <h1 className="font-mono text-2xl font-bold tracking-wider text-foreground mb-2">
-            VR FIRST AID
+            EMERGENCY RESPONSE
           </h1>
           <h2 className="font-mono text-lg text-primary tracking-wide">
-            EMERGENCY TRAINING
+            TRAINING
           </h2>
           <div className="mt-4 w-20 h-px bg-primary/40 mx-auto" />
         </div>

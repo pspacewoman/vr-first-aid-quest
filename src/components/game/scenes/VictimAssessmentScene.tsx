@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import VRPanel from "../VRPanel";
 import victimAssessmentImg from "@/assets/victim-assessment.png";
+import { playCorrect, playWrong } from "@/lib/feedbackSound";
 
 interface VictimAssessmentSceneProps {
   onComplete: () => void;
@@ -82,6 +83,7 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
 
   const handleTapShoulder = () => {
     onCompleteChecklist("assess-consciousness");
+    playCorrect();
     setFeedback({ type: "success", text: "No response from victim." });
     setTimeout(() => {
       setFeedback(null);
@@ -91,9 +93,11 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
 
   const handleBreathingChoice = (choice: string) => {
     if (choice === "correct") {
+      playCorrect();
       setStep("breathing-check");
       setTimerActive(true);
     } else {
+      playWrong();
       setFeedback({
         type: "error",
         text: "Incorrect. Check breathing by observing chest movement and listening for breath sounds."
@@ -109,6 +113,7 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
     setFirstAidActive(false);
     onCompleteChecklist("control-bleeding");
     onCompleteChecklist("provide-help");
+    playCorrect();
     setFeedback({ type: "success", text: "Pressure applied — bleeding controlled." });
     setTimeout(() => {
       setFeedback(null);

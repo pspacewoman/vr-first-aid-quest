@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGameState } from "@/hooks/useGameState";
 import { useSceneAudio } from "@/hooks/useSceneAudio";
 import { setFeedbackMuted } from "@/lib/feedbackSound";
-import { useEffect } from "react";
 import ChecklistOverlay from "./ChecklistOverlay";
 import SideChecklist from "./SideChecklist";
 import FlowDiagram from "./FlowDiagram";

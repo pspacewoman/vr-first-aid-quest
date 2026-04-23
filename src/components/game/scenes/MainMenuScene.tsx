@@ -21,6 +21,7 @@ const rescueChainSteps = [
 const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }: MainMenuSceneProps) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showRescueChain, setShowRescueChain] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [movementMode, setMovementMode] = useState<"teleport" | "smooth">("teleport");
 
   return (
@@ -56,6 +57,9 @@ const MainMenuScene = ({ onStartGame, onOpenChecklist, soundOn, onToggleSound }:
           </button>
           <button onClick={() => setShowRescueChain(true)} className="vr-button w-full">
             🔗 Rescue Chain
+          </button>
+          <button onClick={() => setShowAbout(true)} className="vr-button w-full">
+            ℹ About
           </button>
           <button onClick={() => setShowSettings(true)} className="vr-button w-full">
             ⚙ Settings

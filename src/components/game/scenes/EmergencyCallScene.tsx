@@ -112,7 +112,14 @@ const EmergencyCallScene = ({ onComplete, onCompleteChecklist, onMistake, onInco
       {step === "calling" && (
         <VRPanel sceneLabel="Floating UI" className="max-w-md text-center slide-up">
           <div className="space-y-4">
-            <img src={emergencyCallImg} alt="Emergency call" className="w-28 h-28 mx-auto opacity-80 rounded-lg vibrate" />
+            <img
+              src={emergencyCallImg}
+              alt="Hand holding a phone with the emergency call screen at night"
+              loading="lazy"
+              width={1024}
+              height={1024}
+              className="w-40 h-40 mx-auto object-cover rounded-lg vibrate shadow-lg border border-border/40"
+            />
             <div className="font-mono text-lg text-foreground">📱 Calling 112…</div>
             <div className="flex justify-center gap-1.5 my-2">
               <span className="w-2 h-2 rounded-full bg-primary typing-dot" />

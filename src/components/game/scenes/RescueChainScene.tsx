@@ -1,5 +1,8 @@
+import { useState } from "react";
 import VRPanel from "../VRPanel";
 import rescueChainImg from "@/assets/rescue-chain.png";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Maximize2, X } from "lucide-react";
 
 interface RescueChainSceneProps {
   onContinue: () => void;
@@ -15,6 +18,7 @@ const steps = [
 ];
 
 const RescueChainScene = ({ onContinue }: RescueChainSceneProps) => {
+  const [zoomOpen, setZoomOpen] = useState(false);
   return (
     <div className="flex flex-col items-center justify-center min-h-screen fade-in px-4 py-12">
       <VRPanel className="w-full max-w-2xl" sceneLabel="Introduction">
@@ -25,7 +29,30 @@ const RescueChainScene = ({ onContinue }: RescueChainSceneProps) => {
           Follow these steps in order to save a life. This training will guide you through each one.
         </p>
 
-        <img src={rescueChainImg} alt="Rescue chain" className="w-32 h-auto mx-auto mb-4 opacity-70" />
+        <div className="relative mx-auto mb-6 w-full max-w-sm">
+          <button
+            type="button"
+            onClick={() => setZoomOpen(true)}
+            className="group block w-full overflow-hidden rounded-lg border border-border/40 bg-background/40 transition-all hover:border-primary/60 hover:shadow-lg"
+            aria-label="Enlarge rescue chain diagram"
+          >
+            <img
+              src={rescueChainImg}
+              alt="Rescue chain six-step diagram"
+              loading="lazy"
+              width={1024}
+              height={1024}
+              className="w-full h-auto object-contain transition-transform group-hover:scale-[1.02]"
+            />
+            <span className="absolute top-2 right-2 inline-flex items-center gap-1 rounded-md bg-background/80 backdrop-blur px-2 py-1 text-xs font-mono text-foreground border border-border/60">
+              <Maximize2 className="w-3 h-3" />
+              Pop out
+            </span>
+          </button>
+          <p className="mt-2 text-center text-xs text-muted-foreground font-mono">
+            Tap the image to enlarge
+          </p>
+        </div>
 
         <div className="dialogue-box mb-6">
           Learn the correct sequence of emergency response before you begin.
@@ -58,6 +85,27 @@ const RescueChainScene = ({ onContinue }: RescueChainSceneProps) => {
           ▶ Begin Training
         </button>
       </VRPanel>
+
+      <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
+        <DialogContent className="max-w-3xl p-0 bg-background border-border">
+          <DialogTitle className="sr-only">Rescue Chain diagram</DialogTitle>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setZoomOpen(false)}
+              className="absolute top-3 right-3 z-10 inline-flex items-center justify-center rounded-md bg-background/80 backdrop-blur p-2 border border-border/60 hover:bg-background"
+              aria-label="Close enlarged view"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <img
+              src={rescueChainImg}
+              alt="Rescue chain six-step diagram, enlarged"
+              className="w-full h-auto object-contain rounded-md"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

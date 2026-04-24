@@ -35,7 +35,14 @@ const DrivingScene = ({ onComplete }: DrivingSceneProps) => {
 
       {/* Road viewport */}
       <div className="w-full max-w-2xl aspect-video border border-border/40 rounded-lg relative overflow-hidden mb-4 shadow-lg">
-        <img src={drivingSceneImg} alt="Driving scene" className="w-full h-full object-cover opacity-70" />
+        <img
+          src={drivingSceneImg}
+          alt="First-person view driving on a country road at dusk"
+          loading="lazy"
+          width={1280}
+          height={768}
+          className="w-full h-full object-cover"
+        />
 
         {/* Animated scrolling road lines overlay */}
         <div
@@ -52,7 +59,7 @@ const DrivingScene = ({ onComplete }: DrivingSceneProps) => {
           }}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-background/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/10 to-background/30" />
 
         {/* Steering wheel icon overlay */}
         <div className="absolute bottom-8 right-8 text-4xl opacity-40 sway">🎚</div>

@@ -35,8 +35,15 @@ const AccidentScene = ({ onSelectHotspot }: AccidentSceneProps) => {
       {/* 3D layout with image background */}
       <div className="w-full max-w-3xl aspect-video border border-border/40 rounded-lg relative mb-4 overflow-hidden shadow-lg">
         {/* Background image */}
-        <img src={accidentSceneImg} alt="Accident scene" className="absolute inset-0 w-full h-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+        <img
+          src={accidentSceneImg}
+          alt="Damaged car at twilight on a wet road with hazard lights and bystanders"
+          loading="lazy"
+          width={1280}
+          height={768}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/75 via-background/20 to-background/30" />
 
         {/* Road surface */}
         <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[hsl(215,30%,18%)] to-transparent opacity-60" />

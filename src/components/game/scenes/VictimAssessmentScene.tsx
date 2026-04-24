@@ -191,8 +191,15 @@ const VictimAssessmentScene = ({ onComplete, onCompleteChecklist, onMistake, onB
 
       {/* Victim visual */}
       <div className="w-full max-w-lg aspect-[4/3] border border-border/40 rounded-lg relative mb-4 overflow-hidden shadow-lg">
-        <img src={victimAssessmentImg} alt="Victim assessment" className="w-full h-full object-cover opacity-50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+        <img
+          src={victimAssessmentImg}
+          alt="Responder kneeling beside an injured person on a wet road at dusk"
+          loading="lazy"
+          width={1024}
+          height={960}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/75 via-background/20 to-background/30" />
 
         {/* Chest breathing animation */}
         {(step === "breathing-check" || step === "breathing") && (

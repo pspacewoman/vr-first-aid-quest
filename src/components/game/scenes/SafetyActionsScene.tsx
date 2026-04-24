@@ -55,8 +55,15 @@ const SafetyActionsScene = ({ onComplete, onSkip, onCompleteChecklist }: SafetyA
 
       {/* Placement area */}
       <div className="w-full max-w-2xl aspect-video border border-border/40 rounded-lg relative mb-4 overflow-hidden shadow-lg">
-        <img src={safetyActionsImg} alt="Safety actions" className="absolute inset-0 w-full h-full object-cover opacity-30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+        <img
+          src={safetyActionsImg}
+          alt="Foggy road behind a stopped car at dusk with a warning triangle"
+          loading="lazy"
+          width={1280}
+          height={768}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/75 via-background/20 to-background/30" />
 
         {/* Vehicle */}
         <div className="absolute top-[28%] left-[18%] w-36 h-16 bg-card/70 border-2 border-destructive/40 rounded-lg flex items-center justify-center relative">
